@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Parex Engenharia</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --accent:#f26a21;
+  --navy:#1c1a6e;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#ffffff;}
+}
+:root[data-theme="dark"]{--bg:#ffffff;}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.splash{
+  display:flex;flex-direction:column;align-items:center;gap:clamp(20px,4vh,36px);
+  padding:24px;width:100%;
+}
+.logo{
+  display:block;
+  width:clamp(180px,48vw,420px);
+  max-width:100%;height:auto;
+  opacity:0;transform:scale(.88);
+  animation:aparecer 1.4s cubic-bezier(.2,.7,.2,1) .2s forwards;
+}
+.barra{
+  width:clamp(80px,16vw,140px);height:3px;border-radius:3px;
+  background:color-mix(in srgb,var(--navy) 12%,transparent);
+  overflow:hidden;opacity:0;
+  animation:surgir .6s ease 1.2s forwards;
+}
+.barra::after{
+  content:"";display:block;height:100%;width:40%;
+  background:var(--accent);border-radius:3px;
+  animation:correr 1.3s ease-in-out 1.2s infinite;
+}
+.acoes{position:relative;width:100%;display:flex;justify-content:center;height:3px}
+.botoes{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .6s ease,transform .6s ease,visibility 0s linear .6s;
+}
+.btn{
+  appearance:none;border:0;cursor:pointer;
+  width:100%;max-width:280px;min-height:52px;padding:0 28px;
+  border-radius:10px;color:#fff;
+  font:700 1.05rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  letter-spacing:.02em;
+  transition:transform .15s ease,filter .15s ease;
+}
+.btn:hover{filter:brightness(1.1)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.btn-vigia{background:var(--navy)}
+.btn-adm{background:#d95a12}
+.btn-adm:focus-visible{outline-color:#d95a12}
+.pronto .barra{animation:none;opacity:0;transition:opacity .3s ease}
+.pronto .botoes{opacity:1;visibility:visible;transform:none;transition-delay:.3s,.3s,0s}
+@media (min-width:520px){
+  .botoes{flex-direction:row;justify-content:center;gap:16px}
+  .btn{width:180px}
+}
+.scanner{position:fixed;inset:0;z-index:50;background:#000;display:none;overflow:hidden}
+.scanner.ativo{display:block}
+.scanner video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.moldura{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(70vw,300px);aspect-ratio:1;border-radius:18px;
+  box-shadow:0 0 0 100vmax rgba(0,0,0,.5);
+  pointer-events:none;
+}
+.moldura i{position:absolute;width:34px;height:34px;border:4px solid var(--accent)}
+.moldura i:nth-child(1){top:-2px;left:-2px;border-right:0;border-bottom:0;border-top-left-radius:18px}
+.moldura i:nth-child(2){top:-2px;right:-2px;border-left:0;border-bottom:0;border-top-right-radius:18px}
+.moldura i:nth-child(3){bottom:-2px;left:-2px;border-right:0;border-top:0;border-bottom-left-radius:18px}
+.moldura i:nth-child(4){bottom:-2px;right:-2px;border-left:0;border-top:0;border-bottom-right-radius:18px}
+.scanner.achou .moldura{display:none}
+.fechar{
+  position:absolute;left:16px;top:calc(env(safe-area-inset-top,0px) + 16px);
+  min-height:44px;padding:0 18px;border-radius:22px;border:0;cursor:pointer;
+  background:rgba(0,0,0,.55);color:#fff;
+  font:600 .95rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.fechar:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.status{
+  position:absolute;left:16px;right:16px;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 32px);
+  text-align:center;color:#fff;
+  font:500 1rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+}
+.resultado{
+  position:absolute;left:16px;right:16px;margin:0 auto;max-width:480px;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
+  background:#fff;color:#1a1a1a;border-radius:16px;padding:20px;display:none;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.scanner.achou .resultado{display:block}
+.scanner.achou .status{display:none}
+.resultado h2{margin:0 0 8px;font-size:1rem;color:var(--navy)}
+.resultado p{margin:0 0 16px;font-size:1rem;line-height:1.4;word-break:break-word;max-height:30vh;overflow:auto}
+.resultado .linha{display:flex;gap:10px}
+.resultado .btn{max-width:none;flex:1;width:auto;min-height:48px;padding:0 12px;font-size:1rem}
+.tela{
+  position:fixed;inset:0;z-index:60;background:#fff;display:none;overflow:auto;
+  padding:calc(env(safe-area-inset-top,0px) + 24px) 24px calc(env(safe-area-inset-bottom,0px) + 24px);
+}
+.tela.ativo{display:flex;align-items:center;justify-content:center}
+.caixa{
+  width:100%;max-width:380px;display:flex;flex-direction:column;gap:18px;margin:auto;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1a1a1a;
+}
+.caixa img{width:clamp(130px,40vw,180px);height:auto;align-self:center;margin-bottom:8px}
+.caixa h1{margin:0;font-size:1.4rem;color:var(--navy);text-align:center}
+.caixa .sub{margin:0;text-align:center;color:#555;line-height:1.4}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo label{font-weight:600;font-size:.95rem}
+.campo input{
+  min-height:52px;padding:0 14px;border:2px solid #c9c9d6;border-radius:10px;
+  font:400 1rem system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1a1a1a;background:#fff;
+}
+.campo input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(28,26,110,.2)}
+.erro{margin:0;min-height:1.3em;color:#b3261e;font-size:.95rem;text-align:center}
+.caixa .btn{max-width:none;width:100%}
+.btn-sec{background:#fff;color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+#tela-adm.ativo{align-items:flex-start}
+.painel{width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:20px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1a1a1a}
+.painel .btn{max-width:none}
+.topo{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topo h1{margin:0;font-size:1.35rem;color:var(--navy)}
+.topo .btn{width:auto;min-height:44px;padding:0 20px}
+.bloco{border:2px solid #e3e3ec;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.bloco h2{margin:0;font-size:1.05rem;color:var(--navy)}
+.campo select{min-height:52px;padding:0 12px;border:2px solid #c9c9d6;border-radius:10px;font:400 1rem system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1a1a1a;background:#fff}
+.campo select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(28,26,110,.2)}
+.qtds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.qtds .campo.off{opacity:.4}
+.dica,.armaz{margin:0;color:#555;font-size:.92rem;line-height:1.4}
+.lista{display:grid;gap:12px}
+.cartao{border:2px solid #e3e3ec;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.cartao .l1{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.num{font:700 1.4rem/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:var(--navy)}
+.selo{color:#fff;border-radius:999px;padding:5px 12px;font-size:.85rem;font-weight:700}
+.t-novato{background:#1c1a6e}.t-demitido{background:#b3261e}.t-atestado{background:#0f6b4b}.t-noturno{background:#37474f}
+.cartao .nome{font-weight:600;word-break:break-word}
+.refs{display:flex;flex-wrap:wrap;gap:8px}
+.refs span{background:#f1f1f6;border-radius:8px;padding:5px 10px;font-size:.9rem}
+.acoes-c{display:flex;gap:10px}
+.acoes-c .btn{min-height:44px;font-size:.95rem;width:auto;flex:1}
+.modal{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.ativo{display:flex}
+.modal .cx{background:#fff;border-radius:16px;padding:22px;width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;max-height:100%;overflow:auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1a1a1a}
+.modal img{width:min(260px,70vw);height:auto;image-rendering:pixelated}
+.modal .btn{max-width:none}
+.sem{color:#8a5a00;font-style:italic}
+.opc{font-weight:400;color:#777}
+.filtro{display:flex;align-items:center;gap:10px}
+.filtro label{font-weight:600;font-size:.92rem;white-space:nowrap}
+.filtro select{flex:1;min-height:44px;padding:0 10px;border:2px solid #c9c9d6;border-radius:10px;font:400 .95rem system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#fff;color:#1a1a1a}
+.vinc{display:flex;gap:8px}
+.vinc input{flex:1;min-width:0;min-height:44px;padding:0 12px;border:2px solid #c9c9d6;border-radius:10px;font:400 1rem system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.vinc .btn{width:auto;flex:none;min-height:44px;padding:0 16px;font-size:.95rem}
+.modal .cx.larga{max-width:760px;align-items:stretch}
+.lote-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.tk{position:relative;border:2px solid #000;border-radius:6px;background:#fff;color:#000;display:flex;flex-direction:column;break-inside:avoid;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tk-topo{display:flex;align-items:center;gap:12px;padding:10px 40px 8px 10px}
+.tk-qr{width:88px;height:88px;flex:none;image-rendering:pixelated}
+.tk-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tk-num{display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.tk-num small{font-size:.8rem;font-weight:600}
+.tk-num b{font:800 1.7rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:.02em}
+.tk-tipo{font-weight:800;font-size:.9rem;text-transform:uppercase}
+.tk-nome{font-size:.8rem;font-weight:500;word-break:break-word}
+.tk-box{position:absolute;top:8px;right:8px;width:22px;height:22px;border:2px solid #555;border-radius:6px}
+.tk-linha{border-top:2px dashed #000;margin:0 6px}
+.tk-refs{text-align:center;font-weight:800;font-size:.85rem;padding:8px 6px 9px;letter-spacing:.04em;text-transform:uppercase}
+.cx.larga .linha2{display:flex;gap:10px}
+.cx.larga .linha2 .btn{flex:1}
+@media print{
+  html,body{height:auto;overflow:visible;display:block}
+  body>*:not(#modal-lote){display:none!important}
+  #modal-lote{position:static;display:block;background:#fff;padding:0}
+  #modal-lote .cx{max-width:none;max-height:none;overflow:visible;padding:0}
+  .no-print{display:none!important}
+  .lote-grid{grid-template-columns:repeat(2,1fr);gap:6mm}
+  @page{margin:10mm}
+}
+.selbar{display:flex;gap:8px;flex-wrap:wrap}
+.selbar .btn{width:auto;flex:1;min-width:130px;min-height:44px;font-size:.92rem;padding:0 12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.esq{display:flex;align-items:center;gap:10px}
+.sel{width:26px;height:26px;flex:none;accent-color:var(--navy);cursor:pointer;margin:0}
+.cartao.marcado{border-color:var(--navy);background:#f6f6fc}
+.resultado{max-height:82vh;overflow:auto}
+.v-info{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.v-topo{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.v-info .num{font-size:1.5rem}
+.v-nome{font-weight:600;word-break:break-word}
+.v-status{display:inline-block;align-self:flex-start;padding:6px 12px;border-radius:8px;font-weight:700;font-size:.92rem}
+.v-ok{background:#e3f3ec;color:#0f6b4b}
+.v-no{background:#fbe5e3;color:#b3261e}
+.v-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;border:2px solid #e3e3ec;border-radius:10px;padding:8px 10px}
+.v-linha b{display:block}
+.v-linha small{color:#555}
+.resultado .v-linha .btn{flex:none;min-height:42px;padding:0 14px;font-size:.95rem}
+@keyframes aparecer{to{opacity:1;transform:scale(1)}}
+@keyframes surgir{to{opacity:1}}
+@keyframes correr{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+@media (prefers-reduced-motion:reduce){
+  .logo,.barra{animation:none;opacity:1;transform:none}
+  .barra::after{animation:none;width:100%}
+  .botoes,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+<main class="splash">
+  <img class="logo" alt="Parex Engenharia" src="data:image/png;base64,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">
+  <div class="acoes">
+    <div class="barra" role="progressbar" aria-label="Carregando"></div>
+    <div class="botoes">
+      <button type="button" class="btn btn-vigia" id="btn-vigia">Vigia</button>
+      <button type="button" class="btn btn-adm" id="btn-adm">ADM</button>
+    </div>
+  </div>
+</main>
+<section class="scanner" id="scanner" aria-label="Leitor de QR code">
+  <video id="video" playsinline muted autoplay></video>
+  <div class="moldura" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <button type="button" class="fechar" id="btn-fechar">Voltar</button>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+  <div class="resultado" id="resultado">
+    <h2 id="r-titulo">QR code lido</h2>
+    <div class="v-info" id="v-info"></div>
+    <div class="linha">
+      <button type="button" class="btn btn-vigia" id="btn-outro">Ler outro</button>
+      <button type="button" class="btn btn-adm" id="btn-sair">Fechar</button>
+    </div>
+  </div>
+  <canvas id="canvas" hidden></canvas>
+</section>
+<section class="tela" id="tela-login" aria-label="Login ADM">
+  <form class="caixa" id="form-login" autocomplete="off" novalidate>
+    <img id="logo-login" alt="Parex Engenharia">
+    <h1>Acesso ADM</h1>
+    <div class="campo">
+      <label for="conta">Conta</label>
+      <input id="conta" name="conta" type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" required>
+    </div>
+    <div class="campo">
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" inputmode="numeric" required>
+    </div>
+    <p class="erro" id="erro-login" role="alert"></p>
+    <button type="submit" class="btn btn-adm">Entrar</button>
+    <button type="button" class="btn btn-sec" id="btn-login-voltar">Voltar</button>
+  </form>
+</section>
+<section class="tela" id="tela-adm" aria-label="Área ADM">
+  <div class="painel">
+    <div class="topo">
+      <h1>Tickets de alimentação</h1>
+      <button type="button" class="btn btn-sec" id="btn-sair-adm">Sair</button>
+    </div>
+    <form class="bloco" id="form-ticket" autocomplete="off" novalidate>
+      <h2>Novo ticket</h2>
+      <div class="campo">
+        <label for="tk-nome">Colaborador <span class="opc">(opcional)</span></label>
+        <input id="tk-nome" type="text" autocomplete="off" placeholder="Deixe em branco para gerar sem vínculo">
+      </div>
+      <div class="campo">
+        <label for="tk-lote">Quantos tickets gerar</label>
+        <input id="tk-lote" type="number" min="1" max="50" value="1" inputmode="numeric">
+      </div>
+      <div class="campo">
+        <label for="tk-tipo">Tipo de ticket</label>
+        <select id="tk-tipo">
+          <option value="novato">Novato</option>
+          <option value="demitido">Demitido</option>
+          <option value="atestado">Atestado</option>
+          <option value="noturno">Noturno</option>
+        </select>
+      </div>
+      <p class="dica" id="tk-info"></p>
+      <p class="dica">Quantidade que cada ticket permite pegar de cada refeição:</p>
+      <div class="qtds">
+        <div class="campo" id="l-cafe"><label for="q-cafe">Café</label><input id="q-cafe" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+        <div class="campo" id="l-almoco"><label for="q-almoco">Almoço</label><input id="q-almoco" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+        <div class="campo" id="l-janta"><label for="q-janta">Janta</label><input id="q-janta" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+      </div>
+      <p class="erro" id="tk-msg" role="alert"></p>
+      <button type="submit" class="btn btn-adm" id="btn-gerar">Gerar ticket</button>
+    </form>
+    <div class="bloco">
+      <h2 id="contagem">Tickets gerados</h2>
+      <p class="armaz" id="armaz"></p>
+      <div class="filtro">
+        <label for="filtro">Mostrar</label>
+        <select id="filtro">
+          <option value="todos">Todos</option>
+          <option value="sem">Sem colaborador</option>
+          <option value="com">Com colaborador</option>
+        </select>
+      </div>
+      <div class="selbar">
+        <button type="button" class="btn btn-sec" id="btn-sel-todos">Selecionar todos</button>
+        <button type="button" class="btn btn-sec" id="btn-sel-limpar">Limpar seleção</button>
+        <button type="button" class="btn btn-adm" id="btn-sel-imprimir" disabled>Imprimir selecionados (0)</button>
+      </div>
+      <div class="lista" id="lista"></div>
+    </div>
+  </div>
+  <div class="modal" id="modal-ticket" role="dialog" aria-modal="true" aria-label="Ticket">
+    <div class="cx">
+      <img id="m-qr" alt="QR code do ticket">
+      <div class="num" id="m-num"></div>
+      <div class="nome" id="m-nome"></div>
+      <span class="selo" id="m-tipo"></span>
+      <div class="refs" id="m-refs"></div>
+      <button type="button" class="btn btn-sec" id="btn-m-fechar">Fechar</button>
+    </div>
+  </div>
+</section>
+<div class="modal" id="modal-lote" role="dialog" aria-modal="true" aria-label="Tickets gerados">
+  <div class="cx larga">
+    <div class="nome no-print" id="lote-titulo" style="font-size:1.1rem;color:var(--navy);font-weight:700"></div>
+    <div class="lote-grid" id="lote-grid"></div>
+    <div class="linha2 no-print">
+      <button type="button" class="btn btn-adm" id="btn-lote-imprimir">Imprimir</button>
+      <button type="button" class="btn btn-sec" id="btn-lote-fechar">Fechar</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function(){
+  var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(function(){ document.body.classList.add('pronto'); }, reduzir ? 0 : 1500);
+
+  var scanner = document.getElementById('scanner');
+  var video = document.getElementById('video');
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d', { willReadFrequently: true });
+  var statusEl = document.getElementById('status');
+  var vinfo = document.getElementById('v-info');
+  var rTitulo = document.getElementById('r-titulo');
+  var stream = null, raf = 0, lendo = false;
+
+  function parar(){
+    lendo = false;
+    cancelAnimationFrame(raf);
+    if (stream) { stream.getTracks().forEach(function(t){ t.stop(); }); stream = null; }
+    video.srcObject = null;
+  }
+
+  function fechar(){
+    parar();
+    scanner.classList.remove('ativo', 'achou');
+  }
+
+  function achou(texto){
+    lendo = false;
+    if (navigator.vibrate) { try { navigator.vibrate(80); } catch (e) {} }
+    mostrarLeitura(texto);
+    scanner.classList.add('achou');
+  }
+
+  function ciclo(){
+    if (!lendo) return;
+    if (video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth) {
+      var esc = Math.min(1, 640 / video.videoWidth);
+      var w = Math.round(video.videoWidth * esc), h = Math.round(video.videoHeight * esc);
+      canvas.width = w; canvas.height = h;
+      ctx.drawImage(video, 0, 0, w, h);
+      var img = ctx.getImageData(0, 0, w, h);
+      var code = window.jsQR ? jsQR(img.data, w, h, { inversionAttempts: 'dontInvert' }) : null;
+      if (code && code.data) { achou(code.data); return; }
+    }
+    raf = requestAnimationFrame(ciclo);
+  }
+
+  function abrir(){
+    scanner.classList.remove('achou');
+    scanner.classList.add('ativo');
+    statusEl.textContent = 'Iniciando a câmera...';
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      statusEl.textContent = 'Este navegador não permite usar a câmera aqui.';
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false })
+      .then(function(s){
+        stream = s;
+        video.srcObject = s;
+        return video.play();
+      })
+      .then(function(){
+        statusEl.textContent = 'Aponte a câmera para o QR code';
+        lendo = true;
+        ciclo();
+      })
+      .catch(function(){
+        parar();
+        statusEl.textContent = 'Não foi possível acessar a câmera. Permita o acesso nas configurações do navegador e tente de novo.';
+      });
+  }
+
+  document.getElementById('btn-vigia').addEventListener('click', abrir);
+  document.getElementById('btn-fechar').addEventListener('click', fechar);
+  document.getElementById('btn-sair').addEventListener('click', fechar);
+  document.getElementById('btn-outro').addEventListener('click', function(){ parar(); abrir(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { fechar(); fecharLogin(); } });
+
+  var telaLogin = document.getElementById('tela-login');
+  var telaAdm = document.getElementById('tela-adm');
+  var formLogin = document.getElementById('form-login');
+  var inConta = document.getElementById('conta');
+  var inSenha = document.getElementById('senha');
+  var erroLogin = document.getElementById('erro-login');
+  document.getElementById('logo-login').src = document.querySelector('.logo').src;
+
+  function abrirLogin(){
+    formLogin.reset();
+    erroLogin.textContent = '';
+    telaLogin.classList.add('ativo');
+    inConta.focus();
+  }
+
+  function fecharLogin(){
+    telaLogin.classList.remove('ativo');
+    telaAdm.classList.remove('ativo');
+    formLogin.reset();
+    erroLogin.textContent = '';
+  }
+
+  formLogin.addEventListener('submit', function(e){
+    e.preventDefault();
+    var conta = inConta.value.trim().toUpperCase();
+    var senha = inSenha.value;
+    if (conta === 'ADM0' && senha === '1234') {
+      erroLogin.textContent = '';
+      formLogin.reset();
+      telaLogin.classList.remove('ativo');
+      telaAdm.classList.add('ativo');
+    } else {
+      erroLogin.textContent = 'Conta ou senha incorretos. Tente de novo.';
+      inSenha.value = '';
+      inSenha.focus();
+    }
+  });
+
+  document.getElementById('btn-adm').addEventListener('click', abrirLogin);
+  document.getElementById('btn-login-voltar').addEventListener('click', fecharLogin);
+  document.getElementById('btn-sair-adm').addEventListener('click', fecharLogin);
+
+  /* ---------- Leitura do ticket pelo Vigia ---------- */
+  function acharTicket(texto){
+    var num = String(texto).replace(/\s+/g, '');
+    for (var i = 0; i < tickets.length; i++) if (tickets[i].numero === num) return tickets[i];
+    return null;
+  }
+  function usadoDe(t, r){ return (t.usado && t.usado[r]) || 0; }
+
+  function mostrarLeitura(texto){
+    var t = acharTicket(texto);
+    vinfo.textContent = '';
+    if (!t) {
+      rTitulo.textContent = 'Ticket não encontrado';
+      vinfo.appendChild(el('div', 'v-status v-no', 'Inválido'));
+      vinfo.appendChild(el('div', 'v-nome', 'O código lido não corresponde a nenhum ticket cadastrado.'));
+      vinfo.appendChild(el('small', '', 'Código lido: ' + texto));
+      if (!dbc) vinfo.appendChild(el('small', '', 'Aviso: neste aparelho só aparecem os tickets gerados nele mesmo.'));
+      return;
+    }
+    mostrarTicketVigia(t, '');
+  }
+
+  function mostrarTicketVigia(t, aviso){
+    var tp = TIPOS[t.tipo];
+    rTitulo.textContent = 'Ticket ' + fmt(t.numero);
+    vinfo.textContent = '';
+    var topo = el('div', 'v-topo');
+    topo.appendChild(el('span', 'num', fmt(t.numero)));
+    topo.appendChild(el('span', 'selo t-' + t.tipo, tp ? tp.nome : t.tipo));
+    vinfo.appendChild(topo);
+    vinfo.appendChild(el('div', 'v-nome' + (t.nome ? '' : ' sem'), t.nome || SEM));
+
+    var restam = 0;
+    ORDEM.forEach(function(r){ if (t[r] > 0) restam += Math.max(0, t[r] - usadoDe(t, r)); });
+    vinfo.appendChild(restam > 0
+      ? el('div', 'v-status v-ok', 'Ticket válido')
+      : el('div', 'v-status v-no', 'Todas as refeições já foram usadas'));
+    if (aviso) vinfo.appendChild(el('small', '', aviso));
+
+    ORDEM.forEach(function(r){
+      if (!(t[r] > 0)) return;
+      var u = usadoDe(t, r), falta = t[r] - u;
+      var lin = el('div', 'v-linha');
+      var txt = el('div', '');
+      txt.appendChild(el('b', '', REFS[r]));
+      txt.appendChild(el('small', '', 'Usado ' + u + ' de ' + t[r] + (falta > 0 ? ' — restam ' + falta : ' — esgotado')));
+      lin.appendChild(txt);
+      var b = el('button', 'btn btn-adm', 'Registrar'); b.type = 'button';
+      b.disabled = falta <= 0;
+      b.addEventListener('click', function(){ registrarUso(t.numero, r, b); });
+      lin.appendChild(b);
+      vinfo.appendChild(lin);
+    });
+  }
+
+  function registrarUso(numero, r, btn){
+    var atual = acharTicket(numero);
+    if (!atual) return;
+    if (usadoDe(atual, r) >= atual[r]) { mostrarTicketVigia(atual, REFS[r] + ' já está esgotado.'); return; }
+    var c = {}; for (var k in atual) c[k] = atual[k];
+    c.usado = { cafe: usadoDe(atual, 'cafe'), almoco: usadoDe(atual, 'almoco'), janta: usadoDe(atual, 'janta') };
+    c.usado[r] += 1;
+    btn.disabled = true;
+    atualizar(c).then(function(){
+      mostrarTicketVigia(c, REFS[r] + ' registrado.');
+      if (navigator.vibrate) { try { navigator.vibrate(60); } catch (e) {} }
+    }).catch(function(){
+      btn.disabled = false;
+      mostrarTicketVigia(atual, 'Não foi possível registrar. Tente de novo.');
+    });
+  }
+
+  /* ---------- Tickets de alimentação ---------- */
+  var TIPOS = {
+    novato:   { nome: 'Novato',   refs: ['cafe','almoco','janta'], info: 'Sem cartão alimentício ainda. Direito a café, almoço e janta.' },
+    demitido: { nome: 'Demitido', refs: ['cafe','almoco','janta'], info: 'Será desligado da empresa. Direito a café, almoço e janta.' },
+    atestado: { nome: 'Atestado', refs: ['cafe','almoco'], info: 'Está doente. Direito a café e almoço.' },
+    noturno:  { nome: 'Noturno',  refs: ['cafe','almoco'], info: 'No alojamento até as 14h. Direito a café e almoço.' }
+  };
+  var REFS = { cafe: 'Café', almoco: 'Almoço', janta: 'Janta' };
+  var ORDEM = ['cafe','almoco','janta'];
+  var tickets = [], dbc = null, armazBase = '', sel = {}, visiveis = [];
+  var fTicket = document.getElementById('form-ticket');
+  var inNome = document.getElementById('tk-nome');
+  var selTipo = document.getElementById('tk-tipo');
+  var infoTipo = document.getElementById('tk-info');
+  var msgTk = document.getElementById('tk-msg');
+  var listaEl = document.getElementById('lista');
+  var contagemEl = document.getElementById('contagem');
+  var armazEl = document.getElementById('armaz');
+  var modal = document.getElementById('modal-ticket');
+  var modalLote = document.getElementById('modal-lote');
+  var inLote = document.getElementById('tk-lote');
+  var btnGerar = document.getElementById('btn-gerar');
+  var selFiltro = document.getElementById('filtro');
+  var SEM = 'Sem colaborador';
+
+  function el(tag, cls, txt){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+  function fmt(n){ return n.slice(0, 4) + ' ' + n.slice(4); }
+  function qtd(v){ return Math.max(1, Math.min(30, parseInt(v, 10) || 1)); }
+
+  function aplicarTipo(){
+    var t = TIPOS[selTipo.value];
+    infoTipo.textContent = t.info;
+    ORDEM.forEach(function(r){
+      var inp = document.getElementById('q-' + r);
+      var ok = t.refs.indexOf(r) > -1;
+      inp.disabled = !ok;
+      inp.value = ok ? (inp.value && inp.value !== '0' ? inp.value : '1') : '0';
+      document.getElementById('l-' + r).classList.toggle('off', !ok);
+    });
+  }
+  selTipo.addEventListener('change', aplicarTipo);
+  aplicarTipo();
+
+  function carregarLocal(){
+    try { tickets = JSON.parse(localStorage.getItem('parex_tickets') || '[]'); } catch (e) { tickets = []; }
+    armazBase = 'Os tickets estão salvos só neste aparelho.';
+    renderLista();
+  }
+  function salvarLocal(){ try { localStorage.setItem('parex_tickets', JSON.stringify(tickets)); } catch (e) {} }
+
+  function salvar(t){
+    if (dbc) return dbc.doc('tickets/' + t.numero).set(t);
+    tickets.push(t); salvarLocal(); renderLista();
+    return Promise.resolve();
+  }
+  function remover(num){
+    if (dbc) return dbc.doc('tickets/' + num).delete();
+    tickets = tickets.filter(function(x){ return x.numero !== num; });
+    salvarLocal(); renderLista();
+    return Promise.resolve();
+  }
+
+  function novoNumero(extra){
+    for (var i = 0; i < 30; i++) {
+      var n = String(10000000 + crypto.getRandomValues(new Uint32Array(1))[0] % 90000000);
+      if (!tickets.some(function(x){ return x.numero === n; }) && extra.indexOf(n) < 0) return n;
+    }
+    return null;
+  }
+  function qtdLote(){ return Math.max(1, Math.min(50, parseInt(inLote.value, 10) || 1)); }
+  function rotuloBotao(){
+    var n = qtdLote();
+    btnGerar.textContent = n > 1 ? 'Gerar ' + n + ' tickets' : 'Gerar ticket';
+  }
+  inLote.addEventListener('input', rotuloBotao);
+  function atualizar(c){
+    if (dbc) return dbc.doc('tickets/' + c.numero).set(c);
+    tickets = tickets.map(function(x){ return x.numero === c.numero ? c : x; });
+    salvarLocal(); renderLista();
+    return Promise.resolve();
+  }
+
+  function qrUrl(n){
+    var q = qrcode(0, 'M');
+    q.addData(n); q.make();
+    return q.createDataURL(10, 2);
+  }
+
+  function chips(box, t){
+    box.textContent = '';
+    ORDEM.forEach(function(r){ if (t[r] > 0) box.appendChild(el('span', '', REFS[r] + ': ' + t[r])); });
+  }
+
+  function mostrarTicket(t){
+    if (window.qrcode) document.getElementById('m-qr').src = qrUrl(t.numero);
+    document.getElementById('m-num').textContent = fmt(t.numero);
+    var mn = document.getElementById('m-nome');
+    mn.textContent = t.nome || SEM;
+    mn.className = 'nome' + (t.nome ? '' : ' sem');
+    var selo = document.getElementById('m-tipo');
+    selo.textContent = TIPOS[t.tipo].nome;
+    selo.className = 'selo t-' + t.tipo;
+    chips(document.getElementById('m-refs'), t);
+    modal.classList.add('ativo');
+  }
+  function fecharModal(){ modal.classList.remove('ativo'); }
+  document.getElementById('btn-m-fechar').addEventListener('click', fecharModal);
+  modal.addEventListener('click', function(e){ if (e.target === modal) fecharModal(); });
+  document.getElementById('btn-sair-adm').addEventListener('click', fecharModal);
+
+  function fecharLote(){ modalLote.classList.remove('ativo'); }
+  document.getElementById('btn-lote-fechar').addEventListener('click', fecharLote);
+  document.getElementById('btn-sair-adm').addEventListener('click', fecharLote);
+  modalLote.addEventListener('click', function(e){ if (e.target === modalLote) fecharLote(); });
+  document.getElementById('btn-lote-imprimir').addEventListener('click', function(){
+    try { window.print(); } catch (e) {}
+  });
+  function mostrarLote(lote){
+    var mesmo = lote.every(function(t){ return t.tipo === lote[0].tipo; });
+    document.getElementById('lote-titulo').textContent = lote.length + (lote.length > 1 ? ' tickets' : ' ticket') + (mesmo ? ' (' + TIPOS[lote[0].tipo].nome + ')' : '');
+    var g = document.getElementById('lote-grid');
+    g.textContent = '';
+    lote.forEach(function(t){
+      var it = el('div', 'tk');
+      it.appendChild(el('span', 'tk-box'));
+      var topo = el('div', 'tk-topo');
+      var im = document.createElement('img'); im.className = 'tk-qr'; im.alt = 'QR code ' + t.numero;
+      if (window.qrcode) im.src = qrUrl(t.numero);
+      topo.appendChild(im);
+      var info = el('div', 'tk-info');
+      var nm = el('div', 'tk-num');
+      nm.appendChild(el('small', '', 'nº'));
+      nm.appendChild(el('b', '', fmt(t.numero)));
+      info.appendChild(nm);
+      info.appendChild(el('div', 'tk-tipo', TIPOS[t.tipo].nome));
+      if (t.nome) info.appendChild(el('div', 'tk-nome', t.nome));
+      topo.appendChild(info);
+      it.appendChild(topo);
+      it.appendChild(el('div', 'tk-linha'));
+      var partes = [];
+      ORDEM.forEach(function(r){ if (t[r] > 0) partes.push(REFS[r] + (t[r] > 1 ? ' ×' + t[r] : '')); });
+      it.appendChild(el('div', 'tk-refs', partes.join(' · ')));
+      g.appendChild(it);
+    });
+    modalLote.classList.add('ativo');
+  }
+  selFiltro.addEventListener('change', function(){ renderLista(); });
+
+  var btnSelImp = document.getElementById('btn-sel-imprimir');
+  function nSel(){ return Object.keys(sel).length; }
+  function atualizarSel(){
+    var n = nSel();
+    btnSelImp.textContent = 'Imprimir selecionados (' + n + ')';
+    btnSelImp.disabled = n === 0;
+  }
+  document.getElementById('btn-sel-todos').addEventListener('click', function(){
+    visiveis.forEach(function(t){ sel[t.numero] = true; });
+    renderLista();
+  });
+  document.getElementById('btn-sel-limpar').addEventListener('click', function(){
+    sel = {}; renderLista();
+  });
+  btnSelImp.addEventListener('click', function(){
+    var lote = tickets.filter(function(t){ return sel[t.numero]; })
+      .sort(function(a, b){ return (a.criado || 0) - (b.criado || 0); });
+    if (lote.length) mostrarLote(lote);
+  });
+
+  function renderLista(){
+    var todos = tickets.slice().sort(function(a, b){ return (b.criado || 0) - (a.criado || 0); });
+    var f = selFiltro.value;
+    var ord = todos.filter(function(t){ return f === 'sem' ? !t.nome : f === 'com' ? !!t.nome : true; });
+    var semN = todos.filter(function(t){ return !t.nome; }).length;
+    var existe = {}; todos.forEach(function(t){ existe[t.numero] = true; });
+    Object.keys(sel).forEach(function(k){ if (!existe[k]) delete sel[k]; });
+    visiveis = ord;
+    atualizarSel();
+    contagemEl.textContent = 'Tickets gerados (' + todos.length + ')' + (f !== 'todos' ? ' — mostrando ' + ord.length : '');
+    armazEl.textContent = armazBase + (semN ? ' ' + semN + ' sem colaborador.' : '');
+    listaEl.textContent = '';
+    if (!ord.length) { listaEl.appendChild(el('p', 'dica', todos.length ? 'Nenhum ticket neste filtro.' : 'Nenhum ticket gerado ainda.')); return; }
+    ord.forEach(function(t){
+      var c = el('div', 'cartao' + (sel[t.numero] ? ' marcado' : ''));
+      var l1 = el('div', 'l1');
+      var esq = el('div', 'esq');
+      var cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.className = 'sel'; cb.checked = !!sel[t.numero];
+      cb.setAttribute('aria-label', 'Selecionar ticket ' + fmt(t.numero));
+      cb.addEventListener('change', function(){
+        if (cb.checked) sel[t.numero] = true; else delete sel[t.numero];
+        c.classList.toggle('marcado', cb.checked);
+        atualizarSel();
+      });
+      esq.appendChild(cb);
+      esq.appendChild(el('span', 'num', fmt(t.numero)));
+      l1.appendChild(esq);
+      l1.appendChild(el('span', 'selo t-' + t.tipo, TIPOS[t.tipo] ? TIPOS[t.tipo].nome : t.tipo));
+      c.appendChild(l1);
+      var nomeEl = el('div', 'nome' + (t.nome ? '' : ' sem'), t.nome || SEM);
+      c.appendChild(nomeEl);
+      var rf = el('div', 'refs'); chips(rf, t); c.appendChild(rf);
+      var ac = el('div', 'acoes-c');
+      var bqr = el('button', 'btn btn-adm', 'Ver QR'); bqr.type = 'button';
+      bqr.addEventListener('click', function(){ mostrarTicket(t); });
+      var bex = el('button', 'btn btn-sec', 'Excluir'); bex.type = 'button';
+      bex.addEventListener('click', function(){
+        if (bex.dataset.c) { remover(t.numero).catch(function(){ msgTk.textContent = 'Não foi possível excluir o ticket.'; }); return; }
+        bex.dataset.c = '1'; bex.textContent = 'Confirmar?';
+        setTimeout(function(){ if (bex.isConnected) { delete bex.dataset.c; bex.textContent = 'Excluir'; } }, 3000);
+      });
+      var bvi = el('button', 'btn btn-sec', t.nome ? 'Editar nome' : 'Vincular'); bvi.type = 'button';
+      bvi.addEventListener('click', function(){
+        var box = el('div', 'vinc');
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.value = t.nome || ''; inp.placeholder = 'Nome do colaborador';
+        inp.setAttribute('aria-label', 'Nome do colaborador');
+        var ok = el('button', 'btn btn-adm', 'Salvar'); ok.type = 'button';
+        function gravar(){
+          var v = inp.value.trim();
+          var c2 = {}; for (var k in t) c2[k] = t[k]; c2.nome = v;
+          atualizar(c2).catch(function(){ msgTk.textContent = 'Não foi possível atualizar o ticket.'; });
+        }
+        ok.addEventListener('click', gravar);
+        inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); gravar(); } });
+        box.appendChild(inp); box.appendChild(ok);
+        nomeEl.replaceWith(box); ac.style.display = 'none';
+        inp.focus();
+      });
+      ac.appendChild(bqr); ac.appendChild(bvi); ac.appendChild(bex); c.appendChild(ac);
+      listaEl.appendChild(c);
+    });
+  }
+
+  fTicket.addEventListener('submit', function(e){
+    e.preventDefault();
+    var nome = inNome.value.trim();
+    var n = qtdLote();
+    var tp = TIPOS[selTipo.value];
+    var usados = [], lote = [];
+    for (var i = 0; i < n; i++) {
+      var num = novoNumero(usados);
+      if (!num) { msgTk.textContent = 'Não foi possível gerar o número. Tente de novo.'; return; }
+      usados.push(num);
+      var tk = { numero: num, nome: nome, tipo: selTipo.value, cafe: 0, almoco: 0, janta: 0,
+                 usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Date.now() + i };
+      ORDEM.forEach(function(r){ if (tp.refs.indexOf(r) > -1) tk[r] = qtd(document.getElementById('q-' + r).value); });
+      lote.push(tk);
+    }
+    btnGerar.disabled = true;
+    Promise.all(lote.map(salvar)).then(function(){
+      msgTk.textContent = '';
+      inNome.value = '';
+      inLote.value = '1'; rotuloBotao();
+      if (lote.length === 1) mostrarTicket(lote[0]); else mostrarLote(lote);
+    }).catch(function(){
+      msgTk.textContent = 'Não foi possível salvar todos os tickets. Verifique a lista e tente de novo.';
+    }).then(function(){ btnGerar.disabled = false; });
+  });
+
+  (function iniciarDados(){
+    try {
+      if (window.claude && claude.use) {
+        claude.use('db').then(function(d){
+          if (!d) { carregarLocal(); return; }
+          dbc = d;
+          armazBase = 'Tickets salvos na nuvem e compartilhados.';
+          d.collection('tickets').onSnapshot(function(snap){
+            tickets = snap.docs.map(function(x){ return x.data(); });
+            renderLista();
+          }, function(){ dbc = null; carregarLocal(); });
+        }).catch(carregarLocal);
+        return;
+      }
+    } catch (e) {}
+    carregarLocal();
+  })();
+})();
+</script>
+</body>
+</html>
