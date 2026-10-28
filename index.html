@@ -382,6 +382,31 @@ body{
       <p class="erro" id="tk-msg" role="alert"></p>
       <button type="submit" class="btn btn-adm" id="btn-gerar">Gerar ticket</button>
     </form>
+    <div class="bloco" id="bloco-restaurar">
+      <h2>Colocar ticket já criado / apagado</h2>
+      <p class="dica">Digite o número de um ticket que foi apagado (ou que já existe impresso) para colocá-lo de volta na lista.</p>
+      <div class="campo">
+        <label for="rs-num">Número do ticket</label>
+        <input id="rs-num" type="text" inputmode="numeric" maxlength="9" placeholder="0000 0000" autocomplete="off">
+      </div>
+      <p class="dica ct-msg" id="rs-msg" role="status" aria-live="polite"></p>
+      <div class="campo">
+        <label for="rs-nome">Colaborador (opcional)</label>
+        <input id="rs-nome" type="text" maxlength="80" autocomplete="off">
+      </div>
+      <div class="campo">
+        <label for="rs-tipo">Tipo de ticket</label>
+        <select id="rs-tipo"></select>
+      </div>
+      <div class="qtds">
+        <div class="campo" id="rl-cafe"><label for="rs-cafe">Café</label><input id="rs-cafe" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+        <div class="campo" id="rl-almoco"><label for="rs-almoco">Almoço</label><input id="rs-almoco" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+        <div class="campo" id="rl-janta"><label for="rs-janta">Janta</label><input id="rs-janta" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+      </div>
+      <button type="button" class="btn btn-adm" id="rs-colocar">Colocar ticket na lista</button>
+      <h2 id="rs-titulo-lixeira" style="margin-top:6px">Apagados recentemente</h2>
+      <div class="lista" id="rs-lixeira"></div>
+    </div>
     <div class="bloco" id="bloco-contab">
       <h2>Contabilização do dia</h2>
       <p class="dica">Receba os backups enviados pelos Vigias e veja quem pegou refeição no dia.</p>
@@ -745,6 +770,8 @@ body{
     return Promise.resolve();
   }
   function remover(num){
+    var tk = null; tickets.forEach(function(x){ if (x.numero === num) tk = x; });
+    if (tk) guardarLixeira(tk);
     if (dbc) return dbc.doc('tickets/' + num).delete();
     tickets = tickets.filter(function(x){ return x.numero !== num; });
     salvarLocal(); renderLista();
@@ -858,6 +885,7 @@ body{
   });
 
   function renderLista(){
+    if (typeof renderLixeira === 'function') renderLixeira();
     var todos = tickets.slice().sort(function(a, b){ return (b.criado || 0) - (a.criado || 0); });
     var f = selFiltro.value;
     var ord = todos.filter(function(t){ return f === 'sem' ? !t.nome : f === 'com' ? !!t.nome : true; });
@@ -1259,6 +1287,125 @@ body{
     baixar('refeicoes-' + dia + '.csv', '\ufeff' + linhas.join('\r\n'), 'text/csv;charset=utf-8');
     ctMsg.textContent = 'Planilha gerada com ' + lista.length + ' registro(s).';
   });
+
+
+  /* ---------- Colocar de volta um ticket apagado ---------- */
+  var KLIX = 'parex_lixeira';
+  var lixeira = lerJson(KLIX, []); if (!Array.isArray(lixeira)) lixeira = [];
+  var rsNum = document.getElementById('rs-num'), rsNome = document.getElementById('rs-nome');
+  var rsTipo = document.getElementById('rs-tipo'), rsMsg = document.getElementById('rs-msg');
+  var rsLix = document.getElementById('rs-lixeira'), rsTit = document.getElementById('rs-titulo-lixeira');
+  rsTipo.innerHTML = selTipo.innerHTML;
+
+  function soDigitos(v){ return String(v || '').replace(/\D/g, ''); }
+  function guardarLixeira(t){
+    var c = {}; for (var k in t) c[k] = t[k];
+    c.apagadoEm = Date.now();
+    lixeira = lixeira.filter(function(x){ return x.numero !== t.numero; });
+    lixeira.unshift(c); lixeira = lixeira.slice(0, 200);
+    gravarJson(KLIX, lixeira);
+    renderLixeira();
+  }
+  function aplicarTipoRs(){
+    var t = TIPOS[rsTipo.value];
+    ORDEM.forEach(function(r){
+      var inp = document.getElementById('rs-' + r), ok = t.refs.indexOf(r) > -1;
+      inp.disabled = !ok;
+      inp.value = ok ? (inp.value && inp.value !== '0' ? inp.value : '1') : '0';
+      document.getElementById('rl-' + r).classList.toggle('off', !ok);
+    });
+  }
+  rsTipo.addEventListener('change', aplicarTipoRs);
+  aplicarTipoRs();
+
+  function preencherRs(t){
+    rsNome.value = t.nome || '';
+    if (TIPOS[t.tipo]) rsTipo.value = t.tipo;
+    aplicarTipoRs();
+    ORDEM.forEach(function(r){
+      var inp = document.getElementById('rs-' + r);
+      if (!inp.disabled) inp.value = String(qtd(t[r] > 0 ? t[r] : 1));
+    });
+  }
+  function usadoPorRegistros(n){
+    var u = { cafe: 0, almoco: 0, janta: 0 };
+    todosRegs().forEach(function(r){ if (r.numero === n && u[r.ref] != null) u[r.ref]++; });
+    return u;
+  }
+  function existeTicket(n){ return tickets.some(function(x){ return x.numero === n; }); }
+
+  function sugerirRs(){
+    var n = soDigitos(rsNum.value);
+    if (n.length !== 8) { rsMsg.textContent = n.length ? 'O número do ticket tem 8 dígitos.' : ''; return; }
+    if (existeTicket(n)) { rsMsg.textContent = 'Este número já está na lista de tickets.'; return; }
+    var l = lixeira.filter(function(x){ return x.numero === n; })[0];
+    var regs = todosRegs().filter(function(r){ return r.numero === n; }).sort(function(a, b){ return b.ts - a.ts; });
+    if (l) { preencherRs(l); rsMsg.textContent = 'Encontrado entre os apagados: dados originais carregados. Confira e coloque na lista.'; }
+    else if (regs.length) {
+      var u = usadoPorRegistros(n), t = { nome: regs[0].nome, tipo: TIPOS[regs[0].tipo] ? regs[0].tipo : 'novato' };
+      ORDEM.forEach(function(r){ t[r] = Math.max(1, u[r]); });
+      preencherRs(t);
+      rsMsg.textContent = 'Dados recuperados dos registros de uso. Confira as quantidades e coloque na lista.';
+    } else rsMsg.textContent = 'Número sem histórico neste aparelho. Preencha os dados para recriar o ticket.';
+  }
+  rsNum.addEventListener('input', function(){
+    var d = soDigitos(rsNum.value).slice(0, 8);
+    rsNum.value = d.length > 4 ? d.slice(0, 4) + ' ' + d.slice(4) : d;
+    sugerirRs();
+  });
+
+  function colocarTicket(t){
+    return salvar(t).then(function(){
+      lixeira = lixeira.filter(function(x){ return x.numero !== t.numero; });
+      gravarJson(KLIX, lixeira); renderLixeira();
+    });
+  }
+  document.getElementById('rs-colocar').addEventListener('click', function(){
+    var n = soDigitos(rsNum.value);
+    if (n.length !== 8) { rsMsg.textContent = 'Digite o número do ticket com 8 dígitos.'; rsNum.focus(); return; }
+    if (existeTicket(n)) { rsMsg.textContent = 'Este número já está na lista de tickets.'; return; }
+    var tp = TIPOS[rsTipo.value];
+    var l = lixeira.filter(function(x){ return x.numero === n; })[0];
+    var ur = usadoPorRegistros(n);
+    var t = { numero: n, nome: rsNome.value.trim(), tipo: rsTipo.value, cafe: 0, almoco: 0, janta: 0,
+              usado: { cafe: 0, almoco: 0, janta: 0 }, criado: (l && l.criado) || Date.now() };
+    ORDEM.forEach(function(r){
+      if (tp.refs.indexOf(r) < 0) return;
+      t[r] = qtd(document.getElementById('rs-' + r).value);
+      t.usado[r] = Math.max((l && l.usado && l.usado[r]) || 0, ur[r]);
+    });
+    colocarTicket(t).then(function(){
+      rsMsg.textContent = 'Ticket ' + fmt(n) + ' colocado de volta na lista.';
+      rsNum.value = ''; rsNome.value = '';
+      mostrarTicket(t);
+    }).catch(function(){ rsMsg.textContent = 'Não foi possível colocar o ticket. Tente de novo.'; });
+  });
+
+  function renderLixeira(){
+    var lista = lixeira.filter(function(x){ return !existeTicket(x.numero); });
+    rsTit.textContent = 'Apagados recentemente (' + lista.length + ')';
+    rsLix.textContent = '';
+    if (!lista.length) { rsLix.appendChild(el('p', 'dica', 'Nenhum ticket apagado neste aparelho.')); return; }
+    lista.forEach(function(x){
+      var c = el('div', 'cartao'), l1 = el('div', 'l1');
+      l1.appendChild(el('span', 'num', fmt(x.numero)));
+      l1.appendChild(el('span', 'selo t-' + x.tipo, TIPOS[x.tipo] ? TIPOS[x.tipo].nome : x.tipo));
+      c.appendChild(l1);
+      c.appendChild(el('div', 'nome' + (x.nome ? '' : ' sem'), x.nome || SEM));
+      var rf = el('div', 'refs'); chips(rf, x); c.appendChild(rf);
+      c.appendChild(el('small', 'dica', 'Apagado às ' + horaDe(x.apagadoEm) + ' de ' + dataBr(diaDe(x.apagadoEm))));
+      var b = el('button', 'btn btn-adm', 'Restaurar'); b.type = 'button';
+      b.addEventListener('click', function(){
+        var t = {}; for (var k in x) if (k !== 'apagadoEm') t[k] = x[k];
+        b.disabled = true;
+        colocarTicket(t).then(function(){ rsMsg.textContent = 'Ticket ' + fmt(t.numero) + ' restaurado.'; })
+          .catch(function(){ b.disabled = false; rsMsg.textContent = 'Não foi possível restaurar o ticket.'; });
+      });
+      c.appendChild(b);
+      rsLix.appendChild(c);
+    });
+  }
+  renderLixeira();
 
   ctDia.value = hoje();
   renderContab();
