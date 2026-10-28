@@ -344,6 +344,16 @@ body{
     <button type="button" class="btn btn-adm" id="bk-enviar">Enviar ao ADM</button>
     <button type="button" class="btn btn-vigia" id="bk-copiar">Copiar código</button>
     <button type="button" class="btn btn-sec" id="bk-baixar">Baixar arquivo</button>
+    <div class="campo">
+      <label for="gh-url-v">Endereço do arquivo de tickets (GitHub)</label>
+      <input id="gh-url-v" type="url" placeholder="https://github.com/usuario/repositorio/blob/main/tickets.json" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="campo">
+      <label for="gh-token-v">Token de leitura (só se o repositório for privado)</label>
+      <input id="gh-token-v" type="password" autocomplete="off" spellcheck="false">
+    </div>
+    <p class="dica" id="gh-info-v"></p>
+    <button type="button" class="btn btn-sec" id="gh-sync-v">Atualizar tickets do GitHub</button>
     <button type="button" class="btn btn-sec" id="bk-voltar">Voltar</button>
   </div>
 </section>
@@ -382,6 +392,24 @@ body{
       <p class="erro" id="tk-msg" role="alert"></p>
       <button type="submit" class="btn btn-adm" id="btn-gerar">Gerar ticket</button>
     </form>
+    <div class="bloco" id="bloco-github">
+      <h2>Backup no GitHub</h2>
+      <p class="dica">Baixe o arquivo <b>tickets.json</b> e coloque no seu repositório do GitHub. Os aparelhos dos Vigias e o ADM leem esse arquivo para receber (ou recuperar) os tickets criados.</p>
+      <div class="campo">
+        <label for="gh-url">Endereço do arquivo no GitHub</label>
+        <input id="gh-url" type="url" placeholder="https://github.com/usuario/repositorio/blob/main/tickets.json" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="campo">
+        <label for="gh-token">Token de leitura (só se o repositório for privado)</label>
+        <input id="gh-token" type="password" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
+      </div>
+      <label class="dica" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="gh-nomes"> Incluir o nome dos colaboradores no arquivo</label>
+      <p class="dica">Em repositório público, qualquer pessoa vê o arquivo (números dos tickets inclusive). Prefira repositório privado com token.</p>
+      <button type="button" class="btn btn-adm" id="gh-baixar">Baixar tickets.json</button>
+      <button type="button" class="btn btn-sec" id="gh-sync">Atualizar do GitHub agora</button>
+      <p class="dica ct-msg" id="gh-msg" role="status" aria-live="polite"></p>
+      <p class="dica" id="gh-info"></p>
+    </div>
     <div class="bloco" id="bloco-restaurar">
       <h2>Colocar ticket já criado / apagado</h2>
       <p class="dica">Digite o número de um ticket que foi apagado (ou que já existe impresso) para colocá-lo de volta na lista.</p>
@@ -525,6 +553,7 @@ body{
   }
 
   function abrir(){
+    autoSyncGithub();
     scanner.classList.remove('achou', 'digitando');
     fMan.reset(); erroMan.textContent = '';
     scanner.classList.add('ativo');
@@ -642,20 +671,34 @@ body{
   }
   function usadoDe(t, r){ return (t.usado && t.usado[r]) || 0; }
 
+  var leituraId = 0;
+  function naoEncontrado(texto, manual, atualizando, falhou){
+    vinfo.textContent = '';
+    rTitulo.textContent = 'Ticket não encontrado';
+    vinfo.appendChild(el('div', 'v-status v-no', 'Inválido'));
+    vinfo.appendChild(el('div', 'v-nome', manual
+      ? 'O número digitado não corresponde a nenhum ticket cadastrado. Confira os dígitos e tente de novo.'
+      : 'O código lido não corresponde a nenhum ticket cadastrado.'));
+    vinfo.appendChild(el('small', '', (manual ? 'Número digitado: ' : 'Código lido: ') + texto));
+    if (atualizando) vinfo.appendChild(el('small', '', 'Atualizando os tickets do GitHub...'));
+    else if (falhou) vinfo.appendChild(el('small', '', 'Não foi possível atualizar os tickets do GitHub.'));
+    else if (!dbc && !ghUrl()) vinfo.appendChild(el('small', '', 'Aviso: neste aparelho só aparecem os tickets gerados nele mesmo. Informe o endereço do GitHub em "Backup do dia".'));
+  }
+
   function mostrarLeitura(texto, manual){
     var t = acharTicket(texto);
-    vinfo.textContent = '';
-    if (!t) {
-      rTitulo.textContent = 'Ticket não encontrado';
-      vinfo.appendChild(el('div', 'v-status v-no', 'Inválido'));
-      vinfo.appendChild(el('div', 'v-nome', manual
-        ? 'O número digitado não corresponde a nenhum ticket cadastrado. Confira os dígitos e tente de novo.'
-        : 'O código lido não corresponde a nenhum ticket cadastrado.'));
-      vinfo.appendChild(el('small', '', (manual ? 'Número digitado: ' : 'Código lido: ') + texto));
-      if (!dbc) vinfo.appendChild(el('small', '', 'Aviso: neste aparelho só aparecem os tickets gerados nele mesmo.'));
-      return;
-    }
-    mostrarTicketVigia(t, '');
+    var id = ++leituraId;
+    if (t) { vinfo.textContent = ''; mostrarTicketVigia(t, ''); return; }
+    var usaGh = !!ghUrl();
+    naoEncontrado(texto, manual, usaGh);
+    if (!usaGh) return;
+    sincronizarGithub().then(function(){
+      if (id !== leituraId || !scanner.classList.contains('achou')) return;
+      var t2 = acharTicket(texto);
+      if (t2) mostrarTicketVigia(t2, 'Ticket encontrado após atualizar do GitHub.'); else naoEncontrado(texto, manual, false);
+    }).catch(function(){
+      if (id === leituraId && scanner.classList.contains('achou')) naoEncontrado(texto, manual, false, true);
+    });
   }
 
   function mostrarTicketVigia(t, aviso){
@@ -886,6 +929,7 @@ body{
 
   function renderLista(){
     if (typeof renderLixeira === 'function') renderLixeira();
+    if (typeof renderGhInfo === 'function' && ghInfo) renderGhInfo();
     var todos = tickets.slice().sort(function(a, b){ return (b.criado || 0) - (a.criado || 0); });
     var f = selFiltro.value;
     var ord = todos.filter(function(t){ return f === 'sem' ? !t.nome : f === 'com' ? !!t.nome : true; });
@@ -1055,6 +1099,7 @@ body{
     });
     if (lista.length > 8) bkLista.appendChild(el('div', 'dica', '+ ' + (lista.length - 8) + ' registros anteriores'));
     if (!lista.length) bkLista.appendChild(el('div', 'dica', 'Nenhum registro neste dia.'));
+    renderGhInfo();
   }
 
   function abrirBackup(){
@@ -1406,6 +1451,157 @@ body{
     });
   }
   renderLixeira();
+
+
+  /* ---------- Backup dos tickets pelo GitHub ---------- */
+  /* Se quiser que todos os aparelhos já venham configurados, cole aqui o endereço do tickets.json: */
+  var GITHUB_URL_PADRAO = '';
+  var KGHU = 'parex_gh_url', KGHT = 'parex_gh_token', KGHL = 'parex_gh_ultimo';
+  var ghEls = {
+    url: [document.getElementById('gh-url'), document.getElementById('gh-url-v')],
+    tok: [document.getElementById('gh-token'), document.getElementById('gh-token-v')]
+  };
+  var ghMsg = document.getElementById('gh-msg');
+  var ghInfo = [document.getElementById('gh-info'), document.getElementById('gh-info-v')];
+  var ghNomes = document.getElementById('gh-nomes');
+  var ghUltimo = lerJson(KGHL, null);
+
+  function ghUrl(){ return (lerTxt(KGHU) || GITHUB_URL_PADRAO).trim(); }
+  function ghTok(){ return lerTxt(KGHT).trim(); }
+  function parseGh(u){
+    var m = u.match(/^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(?:blob|raw)\/(.+?)(?:\?.*)?$/) ||
+            u.match(/^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/(.+?)(?:\?.*)?$/);
+    if (!m) return null;
+    var resto = m[3].replace(/^refs\/heads\//, '').split('/');
+    if (resto.length < 2) return null;
+    return { o: m[1], r: m[2], b: resto[0], p: resto.slice(1).join('/') };
+  }
+  function urlRaw(u){
+    var p = parseGh(u);
+    return p ? 'https://raw.githubusercontent.com/' + p.o + '/' + p.r + '/' + p.b + '/' + p.p : u;
+  }
+  function hostOk(u){ return /^https:\/\/(raw\.githubusercontent\.com|gist\.githubusercontent\.com|[\w-]+\.github\.io)\//.test(u); }
+
+  function buscarArquivoGh(){
+    var u = ghUrl();
+    if (!u) return Promise.reject(new Error('sem-url'));
+    var tok = ghTok(), p = parseGh(u), url, opts = { cache: 'no-store' };
+    if (tok && p) {
+      url = 'https://api.github.com/repos/' + p.o + '/' + p.r + '/contents/' + p.p.split('/').map(encodeURIComponent).join('/') + '?ref=' + encodeURIComponent(p.b) + '&v=' + Date.now();
+      opts.headers = { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github.raw+json' };
+    } else {
+      var raw = urlRaw(u);
+      if (!hostOk(raw)) return Promise.reject(new Error('host'));
+      url = raw + (raw.indexOf('?') > -1 ? '&' : '?') + 'v=' + Date.now();
+    }
+    return fetch(url, opts).then(function(r){
+      if (!r.ok) throw new Error('http' + r.status);
+      return r.text();
+    });
+  }
+  function msgErroGh(e){
+    var m = (e && e.message) || '';
+    if (m === 'sem-url') return 'Informe o endereço do arquivo no GitHub.';
+    if (m === 'host') return 'Use o endereço do arquivo no GitHub (github.com/.../blob/... ou raw.githubusercontent.com/...).';
+    if (m === 'formato') return 'O arquivo não é um backup de tickets válido.';
+    if (m === 'http404') return 'Arquivo não encontrado. Confira o endereço (se o repositório for privado, informe o token).';
+    if (m === 'http401' || m === 'http403') return 'O GitHub recusou o acesso. Confira o token de leitura.';
+    return 'Não foi possível baixar do GitHub. Verifique a internet e o endereço.';
+  }
+
+  function limparTicket(x){
+    if (!x || typeof x !== 'object') return null;
+    var n = String(x.numero || '').replace(/\s+/g, '');
+    if (!/^\d{8}$/.test(n) || !TIPOS[x.tipo]) return null;
+    var t = { numero: n, nome: String(x.nome || '').slice(0, 80), tipo: x.tipo, cafe: 0, almoco: 0, janta: 0,
+              usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Number(x.criado) || Date.now() };
+    ORDEM.forEach(function(r){
+      t[r] = Math.max(0, Math.min(30, parseInt(x[r], 10) || 0));
+      t.usado[r] = Math.max(0, Math.min(99, parseInt(x.usado && x.usado[r], 10) || 0));
+    });
+    return t;
+  }
+  function mesclarTickets(lista){
+    var mapa = {}; tickets.forEach(function(t){ mapa[t.numero] = t; });
+    var novos = [], mudados = [], inv = 0, valid = 0;
+    lista.forEach(function(x){
+      var t = limparTicket(x);
+      if (!t) { inv++; return; }
+      valid++;
+      var l = mapa[t.numero];
+      if (!l) { mapa[t.numero] = t; novos.push(t); return; }
+      var c = {}; for (var k in l) c[k] = l[k];
+      var mudou = false;
+      c.usado = {};
+      ORDEM.forEach(function(r){
+        var a = usadoDe(l, r), b = Math.max(a, t.usado[r]);
+        c.usado[r] = b; if (b !== a) mudou = true;
+      });
+      if (!c.nome && t.nome) { c.nome = t.nome; mudou = true; }
+      if (mudou) mudados.push(c);
+    });
+    var res = { novos: novos.length, atualizados: mudados.length, total: valid, invalidos: inv };
+    if (!novos.length && !mudados.length) return Promise.resolve(res);
+    if (dbc) return Promise.all(novos.concat(mudados).map(function(t){ return dbc.doc('tickets/' + t.numero).set(t); })).then(function(){ return res; });
+    var troca = {}; mudados.forEach(function(c){ troca[c.numero] = c; });
+    tickets = tickets.map(function(x){ return troca[x.numero] || x; }).concat(novos);
+    salvarLocal(); renderLista();
+    return Promise.resolve(res);
+  }
+
+  var ghEmCurso = null;
+  function sincronizarGithub(){
+    if (ghEmCurso) return ghEmCurso;
+    ghEmCurso = buscarArquivoGh().then(function(txt){
+      var d; try { d = JSON.parse(txt); } catch (e) { throw new Error('formato'); }
+      var lista = Array.isArray(d) ? d : (d && Array.isArray(d.tickets) ? d.tickets : null);
+      if (!lista) throw new Error('formato');
+      return mesclarTickets(lista);
+    }).then(function(res){
+      ghUltimo = { ts: Date.now(), total: res.total }; gravarJson(KGHL, ghUltimo);
+      ghEmCurso = null; renderGhInfo();
+      return res;
+    }, function(e){ ghEmCurso = null; throw e; });
+    return ghEmCurso;
+  }
+  function autoSyncGithub(){
+    if (!ghUrl()) return;
+    if (ghUltimo && Date.now() - ghUltimo.ts < 120000) return;
+    sincronizarGithub().catch(function(){});
+  }
+
+  function renderGhInfo(){
+    var txt = ghUltimo
+      ? 'Última atualização do GitHub às ' + horaDe(ghUltimo.ts) + ' de ' + dataBr(diaDe(ghUltimo.ts)) + ' (' + ghUltimo.total + ' tickets no arquivo). Neste aparelho: ' + tickets.length + '.'
+      : 'Ainda não foi atualizado pelo GitHub. Tickets neste aparelho: ' + tickets.length + '.';
+    ghInfo.forEach(function(e){ if (e) e.textContent = txt; });
+  }
+  function preencherGh(){
+    ghEls.url.forEach(function(e){ if (e && document.activeElement !== e) e.value = lerTxt(KGHU) || GITHUB_URL_PADRAO; });
+    ghEls.tok.forEach(function(e){ if (e && document.activeElement !== e) e.value = lerTxt(KGHT); });
+  }
+  ghEls.url.forEach(function(e){ e.addEventListener('input', function(){ gravarTxt(KGHU, e.value.trim()); preencherGh(); }); });
+  ghEls.tok.forEach(function(e){ e.addEventListener('input', function(){ gravarTxt(KGHT, e.value.trim()); preencherGh(); }); });
+
+  function acaoSync(msgEl, btn){
+    msgEl.textContent = 'Atualizando...';
+    btn.disabled = true;
+    sincronizarGithub().then(function(res){
+      msgEl.textContent = res.novos + ' ticket(s) novo(s), ' + res.atualizados + ' atualizado(s), ' + (res.total - res.novos - res.atualizados) + ' sem mudança.' + (res.invalidos ? ' ' + res.invalidos + ' inválido(s) ignorado(s).' : '');
+    }).catch(function(e){ msgEl.textContent = msgErroGh(e); })
+      .then(function(){ btn.disabled = false; });
+  }
+  document.getElementById('gh-sync').addEventListener('click', function(){ acaoSync(ghMsg, this); });
+  document.getElementById('gh-sync-v').addEventListener('click', function(){ acaoSync(bkMsg, this); });
+  document.getElementById('gh-baixar').addEventListener('click', function(){
+    if (!tickets.length) { ghMsg.textContent = 'Não há tickets para exportar.'; return; }
+    var comNomes = ghNomes.checked;
+    var arq = { tipo: 'parex-tickets', versao: 1, gerado: Date.now(), tickets: tickets.map(function(t){
+      var c = {}; for (var k in t) c[k] = t[k]; if (!comNomes) c.nome = ''; return c; }) };
+    baixar('tickets.json', JSON.stringify(arq, null, 1), 'application/json');
+    ghMsg.textContent = 'Arquivo tickets.json baixado com ' + tickets.length + ' ticket(s). Envie-o ao repositório do GitHub, substituindo o anterior.';
+  });
+  preencherGh(); renderGhInfo(); autoSyncGithub();
 
   ctDia.value = hoje();
   renderContab();
