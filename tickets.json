@@ -1,0 +1,63 @@
+{
+ "tipo": "parex-tickets",
+ "versao": 1,
+ "gerado": 1793212636371,
+ "tickets": [
+  {
+   "numero": "80081041",
+   "nome": "TESTE",
+   "tipo": "demitido",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793210371082
+  },
+  {
+   "numero": "61389296",
+   "nome": "",
+   "tipo": "atestado",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793210374083
+  },
+  {
+   "numero": "95866007",
+   "nome": "",
+   "tipo": "noturno",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793210378273
+  },
+  {
+   "numero": "72635999",
+   "nome": "TESTE COLABORADOR",
+   "tipo": "novato",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793211185337
+  }
+ ]
+}
