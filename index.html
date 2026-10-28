@@ -104,6 +104,23 @@ body{
 }
 .btn-backup:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .scanner.achou .btn-backup,.scanner.digitando .btn-backup{display:none}
+.btn-foto{
+  position:absolute;right:16px;top:calc(env(safe-area-inset-top,0px) + 68px);
+  min-height:44px;padding:0 18px;border-radius:22px;border:0;cursor:pointer;
+  background:var(--navy);color:#fff;
+  font:700 .95rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-shadow:0 0 0 2px rgba(255,255,255,.7);
+}
+.btn-foto:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.scanner.achou .btn-foto,.scanner.digitando .btn-foto{display:none}
+.aviso-foto{
+  position:absolute;left:16px;right:16px;margin:0 auto;max-width:420px;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 96px);
+  background:rgba(0,0,0,.75);color:#fff;border-radius:12px;padding:12px 14px;text-align:center;
+  font:500 .95rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.aviso-foto[hidden]{display:none}
+.scanner.achou .aviso-foto,.scanner.digitando .aviso-foto{display:none}
 #tela-backup.ativo{align-items:flex-start}
 .resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
 .resumo div{border:2px solid #e3e3ec;border-radius:10px;padding:8px 6px;text-align:center}
@@ -288,6 +305,9 @@ body{
   <button type="button" class="fechar" id="btn-fechar">Voltar</button>
   <button type="button" class="btn-manual" id="btn-manual">Digitar número</button>
   <button type="button" class="btn-backup" id="btn-backup">Backup do dia</button>
+  <button type="button" class="btn-foto" id="btn-foto">Tirar foto</button>
+  <input type="file" id="in-foto" accept="image/*" capture="environment" hidden>
+  <div class="aviso-foto" id="aviso-foto" role="status" aria-live="polite" hidden></div>
   <form class="manual" id="form-manual" autocomplete="off" novalidate>
     <label for="in-manual">Número do ticket</label>
     <input id="in-manual" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" placeholder="0000 0000" aria-describedby="erro-manual">
@@ -511,6 +531,7 @@ body{
     scanner.classList.remove('ativo', 'achou', 'digitando');
     fMan.reset(); erroMan.textContent = '';
     if (telaBk) telaBk.classList.remove('ativo');
+    if (avisoFoto) avisoFoto.hidden = true;
   }
 
   function achou(texto){
@@ -565,6 +586,78 @@ body{
   document.getElementById('btn-fechar').addEventListener('click', fechar);
   document.getElementById('btn-sair').addEventListener('click', fechar);
   document.getElementById('btn-outro').addEventListener('click', function(){ parar(); abrir(); });
+  /* ---------- Tirar foto e identificar o QR code ---------- */
+  var inFoto = document.getElementById('in-foto');
+  var avisoFoto = document.getElementById('aviso-foto');
+  var avisoT = 0;
+  function avisar(txt){
+    avisoFoto.textContent = txt || '';
+    avisoFoto.hidden = !txt;
+    clearTimeout(avisoT);
+    if (txt) avisoT = setTimeout(function(){ avisoFoto.hidden = true; }, 7000);
+  }
+  function imagemViaTag(file){
+    return new Promise(function(ok, no){
+      var u = URL.createObjectURL(file), im = new Image();
+      im.onload = function(){ URL.revokeObjectURL(u); ok(im); };
+      im.onerror = function(){ URL.revokeObjectURL(u); no(new Error('imagem')); };
+      im.src = u;
+    });
+  }
+  function carregarImagem(file){
+    if (window.createImageBitmap) {
+      return createImageBitmap(file, { imageOrientation: 'from-image' }).catch(function(){ return imagemViaTag(file); });
+    }
+    return imagemViaTag(file);
+  }
+  function qrPorJsQR(img){
+    if (!window.jsQR) return null;
+    var W = img.width || img.naturalWidth, H = img.height || img.naturalHeight;
+    var c = document.createElement('canvas'), x = c.getContext('2d', { willReadFrequently: true });
+    var tamanhos = [1600, 1000, 640];
+    for (var i = 0; i < tamanhos.length; i++) {
+      var esc = Math.min(1, tamanhos[i] / Math.max(W, H));
+      c.width = Math.max(1, Math.round(W * esc)); c.height = Math.max(1, Math.round(H * esc));
+      x.drawImage(img, 0, 0, c.width, c.height);
+      var dados = x.getImageData(0, 0, c.width, c.height);
+      var code = jsQR(dados.data, c.width, c.height, { inversionAttempts: 'attemptBoth' });
+      if (code && code.data) return code.data;
+    }
+    return null;
+  }
+  function decodificarFoto(img){
+    var p = Promise.resolve(null);
+    try {
+      if (window.BarcodeDetector) {
+        p = new BarcodeDetector({ formats: ['qr_code'] }).detect(img)
+          .then(function(r){ return (r && r[0] && r[0].rawValue) || null; }).catch(function(){ return null; });
+      }
+    } catch (e) {}
+    return p.then(function(v){ return v || qrPorJsQR(img); });
+  }
+  function retomarLeitura(){
+    if (!scanner.classList.contains('ativo') || scanner.classList.contains('achou') || scanner.classList.contains('digitando')) return;
+    if (!stream) return;
+    var vivo = stream.getTracks().some(function(t){ return t.readyState === 'live'; });
+    if (vivo) { lendo = true; ciclo(); } else { parar(); abrir(); }
+  }
+  document.getElementById('btn-foto').addEventListener('click', function(){ inFoto.click(); });
+  inFoto.addEventListener('change', function(){
+    var f = inFoto.files && inFoto.files[0];
+    inFoto.value = '';
+    if (!f) return;
+    lendo = false; cancelAnimationFrame(raf);
+    avisar('Identificando o QR code...');
+    carregarImagem(f).then(decodificarFoto).then(function(txt){
+      if (txt) { avisar(''); achou(txt); return; }
+      avisar('Não encontrei o QR code na foto. Chegue mais perto, deixe o QR inteiro e bem iluminado, ou use "Digitar número".');
+      retomarLeitura();
+    }).catch(function(){
+      avisar('Não foi possível abrir a foto. Tente de novo.');
+      retomarLeitura();
+    });
+  });
+
   /* ---------- Digitação manual do número (quando o QR não for lido) ---------- */
   function abrirManual(){
     lendo = false;
