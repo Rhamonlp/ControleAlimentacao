@@ -89,6 +89,50 @@ body{
 .moldura i:nth-child(3){bottom:-2px;left:-2px;border-right:0;border-top:0;border-bottom-left-radius:18px}
 .moldura i:nth-child(4){bottom:-2px;right:-2px;border-left:0;border-top:0;border-bottom-right-radius:18px}
 .scanner.achou .moldura{display:none}
+.btn-manual{
+  position:absolute;right:16px;top:calc(env(safe-area-inset-top,0px) + 16px);
+  min-height:44px;padding:0 18px;border-radius:22px;border:0;cursor:pointer;
+  background:#d95a12;color:#fff;
+  font:700 .95rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.btn-manual:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.btn-backup{
+  position:absolute;left:16px;top:calc(env(safe-area-inset-top,0px) + 68px);
+  min-height:44px;padding:0 18px;border-radius:22px;border:0;cursor:pointer;
+  background:rgba(0,0,0,.55);color:#fff;
+  font:600 .95rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.btn-backup:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.scanner.achou .btn-backup,.scanner.digitando .btn-backup{display:none}
+#tela-backup.ativo{align-items:flex-start}
+.resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.resumo div{border:2px solid #e3e3ec;border-radius:10px;padding:8px 6px;text-align:center}
+.resumo b{display:block;font-size:1.5rem;color:var(--navy)}
+.resumo small{color:#555;font-size:.85rem}
+.campo textarea{padding:10px 14px;border:2px solid #c9c9d6;border-radius:10px;font:400 .95rem ui-monospace,Menlo,Consolas,monospace;color:#1a1a1a;background:#fff;resize:vertical}
+.campo textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(28,26,110,.2)}
+.campo input[type=date]{min-height:52px}
+.alerta{color:#b3261e;font-weight:600;font-size:.9rem}
+.ct-msg{white-space:pre-line}
+.regs{display:grid;gap:6px}
+.regs .dica{border-bottom:1px solid #eee;padding-bottom:4px}
+.manual{
+  position:absolute;left:16px;right:16px;margin:0 auto;max-width:420px;
+  top:calc(env(safe-area-inset-top,0px) + 72px);
+  background:#fff;color:#1a1a1a;border-radius:16px;padding:16px;display:none;flex-direction:column;gap:10px;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;z-index:2;
+}
+.scanner.digitando .manual{display:flex}
+.scanner.digitando .moldura,.scanner.digitando .status{display:none}
+.manual label{font-weight:700;color:var(--navy)}
+.manual input{
+  min-height:56px;padding:0 14px;border:2px solid #c9c9d6;border-radius:10px;text-align:center;
+  font:700 1.6rem/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.1em;color:#1a1a1a;background:#fff;
+}
+.manual input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(28,26,110,.2)}
+.manual .erro{min-height:1.2em}
+.manual .linha{display:flex;gap:10px}
+.manual .btn{max-width:none;flex:1;width:auto;min-height:48px;padding:0 12px;font-size:1rem}
 .fechar{
   position:absolute;left:16px;top:calc(env(safe-area-inset-top,0px) + 16px);
   min-height:44px;padding:0 18px;border-radius:22px;border:0;cursor:pointer;
@@ -242,6 +286,17 @@ body{
   <video id="video" playsinline muted autoplay></video>
   <div class="moldura" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <button type="button" class="fechar" id="btn-fechar">Voltar</button>
+  <button type="button" class="btn-manual" id="btn-manual">Digitar número</button>
+  <button type="button" class="btn-backup" id="btn-backup">Backup do dia</button>
+  <form class="manual" id="form-manual" autocomplete="off" novalidate>
+    <label for="in-manual">Número do ticket</label>
+    <input id="in-manual" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" placeholder="0000 0000" aria-describedby="erro-manual">
+    <p class="erro" id="erro-manual" role="alert"></p>
+    <div class="linha">
+      <button type="submit" class="btn btn-adm">Buscar</button>
+      <button type="button" class="btn btn-sec" id="btn-manual-cancelar">Usar câmera</button>
+    </div>
+  </form>
   <div class="status" id="status" role="status" aria-live="polite"></div>
   <div class="resultado" id="resultado">
     <h2 id="r-titulo">QR code lido</h2>
@@ -269,6 +324,28 @@ body{
     <button type="submit" class="btn btn-adm">Entrar</button>
     <button type="button" class="btn btn-sec" id="btn-login-voltar">Voltar</button>
   </form>
+</section>
+<section class="tela" id="tela-backup" aria-label="Backup do Vigia">
+  <div class="caixa">
+    <h1>Backup do Vigia</h1>
+    <p class="sub">Envie ao ADM os registros do dia para a contabilização das refeições.</p>
+    <div class="campo">
+      <label for="bk-nome">Seu nome / posto</label>
+      <input id="bk-nome" type="text" maxlength="60" placeholder="Ex.: João — Refeitório">
+    </div>
+    <div class="campo">
+      <label for="bk-dia">Dia</label>
+      <input id="bk-dia" type="date">
+    </div>
+    <div class="resumo" id="bk-resumo"></div>
+    <p class="dica" id="bk-info"></p>
+    <div class="regs" id="bk-lista"></div>
+    <p class="dica ct-msg" id="bk-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-adm" id="bk-enviar">Enviar ao ADM</button>
+    <button type="button" class="btn btn-vigia" id="bk-copiar">Copiar código</button>
+    <button type="button" class="btn btn-sec" id="bk-baixar">Baixar arquivo</button>
+    <button type="button" class="btn btn-sec" id="bk-voltar">Voltar</button>
+  </div>
 </section>
 <section class="tela" id="tela-adm" aria-label="Área ADM">
   <div class="painel">
@@ -305,6 +382,29 @@ body{
       <p class="erro" id="tk-msg" role="alert"></p>
       <button type="submit" class="btn btn-adm" id="btn-gerar">Gerar ticket</button>
     </form>
+    <div class="bloco" id="bloco-contab">
+      <h2>Contabilização do dia</h2>
+      <p class="dica">Receba os backups enviados pelos Vigias e veja quem pegou refeição no dia.</p>
+      <div class="campo">
+        <label for="ct-arq">Receber backup (arquivo)</label>
+        <input id="ct-arq" type="file" accept=".json,.txt,application/json,text/plain" multiple>
+      </div>
+      <div class="campo">
+        <label for="ct-cod">Ou cole o código recebido</label>
+        <textarea id="ct-cod" rows="3" spellcheck="false" placeholder="PAREXBKP1:..."></textarea>
+      </div>
+      <button type="button" class="btn btn-sec" id="ct-colar">Importar código</button>
+      <p class="dica ct-msg" id="ct-msg" role="status" aria-live="polite"></p>
+      <div class="campo">
+        <label for="ct-dia">Dia da contabilização</label>
+        <input id="ct-dia" type="date">
+      </div>
+      <div class="resumo" id="ct-resumo"></div>
+      <div class="refs" id="ct-vigias"></div>
+      <div class="lista" id="ct-lista"></div>
+      <p class="dica" id="ct-imports"></p>
+      <button type="button" class="btn btn-adm" id="ct-csv">Exportar planilha (CSV)</button>
+    </div>
     <div class="bloco">
       <h2 id="contagem">Tickets gerados</h2>
       <p class="armaz" id="armaz"></p>
@@ -360,6 +460,9 @@ body{
   var vinfo = document.getElementById('v-info');
   var rTitulo = document.getElementById('r-titulo');
   var stream = null, raf = 0, lendo = false;
+  var fMan = document.getElementById('form-manual');
+  var inMan = document.getElementById('in-manual');
+  var erroMan = document.getElementById('erro-manual');
 
   function parar(){
     lendo = false;
@@ -370,7 +473,9 @@ body{
 
   function fechar(){
     parar();
-    scanner.classList.remove('ativo', 'achou');
+    scanner.classList.remove('ativo', 'achou', 'digitando');
+    fMan.reset(); erroMan.textContent = '';
+    if (telaBk) telaBk.classList.remove('ativo');
   }
 
   function achou(texto){
@@ -395,7 +500,8 @@ body{
   }
 
   function abrir(){
-    scanner.classList.remove('achou');
+    scanner.classList.remove('achou', 'digitando');
+    fMan.reset(); erroMan.textContent = '';
     scanner.classList.add('ativo');
     statusEl.textContent = 'Iniciando a câmera...';
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -423,7 +529,43 @@ body{
   document.getElementById('btn-fechar').addEventListener('click', fechar);
   document.getElementById('btn-sair').addEventListener('click', fechar);
   document.getElementById('btn-outro').addEventListener('click', function(){ parar(); abrir(); });
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { fechar(); fecharLogin(); } });
+  /* ---------- Digitação manual do número (quando o QR não for lido) ---------- */
+  function abrirManual(){
+    lendo = false;
+    cancelAnimationFrame(raf);
+    scanner.classList.remove('achou');
+    scanner.classList.add('digitando');
+    erroMan.textContent = '';
+    inMan.focus();
+  }
+  function fecharManual(){
+    scanner.classList.remove('digitando');
+    erroMan.textContent = '';
+    if (stream && !scanner.classList.contains('achou')) { lendo = true; ciclo(); }
+  }
+  inMan.addEventListener('input', function(){
+    var d = inMan.value.replace(/\D/g, '').slice(0, 8);
+    inMan.value = d.length > 4 ? d.slice(0, 4) + ' ' + d.slice(4) : d;
+    erroMan.textContent = '';
+  });
+  fMan.addEventListener('submit', function(e){
+    e.preventDefault();
+    var d = inMan.value.replace(/\D/g, '');
+    if (d.length !== 8) { erroMan.textContent = 'O número do ticket tem 8 dígitos.'; inMan.focus(); return; }
+    inMan.blur();
+    scanner.classList.remove('digitando');
+    mostrarLeitura(d, true);
+    scanner.classList.add('achou');
+  });
+  document.getElementById('btn-manual').addEventListener('click', abrirManual);
+  document.getElementById('btn-manual-cancelar').addEventListener('click', function(){
+    fecharManual();
+    if (!stream) statusEl.textContent = 'Câmera indisponível. Use "Digitar número".';
+  });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') {
+    if (telaBk && telaBk.classList.contains('ativo')) { fecharBackup(); return; }
+    fechar(); fecharLogin();
+  } });
 
   var telaLogin = document.getElementById('tela-login');
   var telaAdm = document.getElementById('tela-adm');
@@ -475,14 +617,16 @@ body{
   }
   function usadoDe(t, r){ return (t.usado && t.usado[r]) || 0; }
 
-  function mostrarLeitura(texto){
+  function mostrarLeitura(texto, manual){
     var t = acharTicket(texto);
     vinfo.textContent = '';
     if (!t) {
       rTitulo.textContent = 'Ticket não encontrado';
       vinfo.appendChild(el('div', 'v-status v-no', 'Inválido'));
-      vinfo.appendChild(el('div', 'v-nome', 'O código lido não corresponde a nenhum ticket cadastrado.'));
-      vinfo.appendChild(el('small', '', 'Código lido: ' + texto));
+      vinfo.appendChild(el('div', 'v-nome', manual
+        ? 'O número digitado não corresponde a nenhum ticket cadastrado. Confira os dígitos e tente de novo.'
+        : 'O código lido não corresponde a nenhum ticket cadastrado.'));
+      vinfo.appendChild(el('small', '', (manual ? 'Número digitado: ' : 'Código lido: ') + texto));
       if (!dbc) vinfo.appendChild(el('small', '', 'Aviso: neste aparelho só aparecem os tickets gerados nele mesmo.'));
       return;
     }
@@ -531,6 +675,7 @@ body{
     c.usado[r] += 1;
     btn.disabled = true;
     atualizar(c).then(function(){
+      registrar(c, r);
       mostrarTicketVigia(c, REFS[r] + ' registrado.');
       if (navigator.vibrate) { try { navigator.vibrate(60); } catch (e) {} }
     }).catch(function(){
@@ -803,6 +948,322 @@ body{
     }).then(function(){ btnGerar.disabled = false; });
   });
 
+
+  /* ---------- Registros do dia e backup Vigia -> ADM ---------- */
+  var KREG = 'parex_registros', KIMP = 'parex_imports', KVIG = 'parex_vigia', KDISP = 'parex_disp', KULT = 'parex_bk_ultimo';
+  var PREFIXO = 'PAREXBKP1:';
+  var registros = [], regsNuvem = [], importsLog = [];
+  function lerJson(k, pad){ try { var v = JSON.parse(localStorage.getItem(k) || ''); return v == null ? pad : v; } catch (e) { return pad; } }
+  function gravarJson(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function lerTxt(k){ try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function gravarTxt(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+  registros = lerJson(KREG, []); if (!Array.isArray(registros)) registros = [];
+  importsLog = lerJson(KIMP, []); if (!Array.isArray(importsLog)) importsLog = [];
+  var disp = lerTxt(KDISP);
+  if (!disp) { disp = Math.random().toString(36).slice(2, 8); gravarTxt(KDISP, disp); }
+
+  function p2(n){ return (n < 10 ? '0' : '') + n; }
+  function diaDe(ts){ var d = new Date(ts); return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+  function horaDe(ts){ var d = new Date(ts); return p2(d.getHours()) + ':' + p2(d.getMinutes()); }
+  function hoje(){ return diaDe(Date.now()); }
+  function dataBr(d){ var p = String(d).split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : d; }
+  function idReg(){ return disp + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6); }
+  function salvarRegs(){ gravarJson(KREG, registros); }
+  function todosRegs(){
+    var mapa = {}, out = [];
+    registros.concat(regsNuvem).forEach(function(r){ if (r && r.id && !mapa[r.id]) { mapa[r.id] = true; out.push(r); } });
+    return out;
+  }
+
+  function registrar(t, r){
+    var reg = { id: idReg(), numero: t.numero, nome: t.nome || '', tipo: t.tipo, ref: r, ts: Date.now(), vigia: lerTxt(KVIG) };
+    reg.dia = diaDe(reg.ts);
+    registros.push(reg); salvarRegs();
+    if (dbc) { try { dbc.doc('registros/' + reg.id).set(reg).catch(function(){}); } catch (e) {} }
+    renderResumoVigia(); renderContab();
+  }
+
+  function contarRefs(lista){
+    var c = { cafe: 0, almoco: 0, janta: 0, total: 0 };
+    lista.forEach(function(r){ if (c[r.ref] != null) { c[r.ref]++; c.total++; } });
+    return c;
+  }
+  function celulas(box, itens){
+    box.textContent = '';
+    itens.forEach(function(i){
+      var d = el('div'); d.appendChild(el('b', '', String(i[1]))); d.appendChild(el('small', '', i[0])); box.appendChild(d);
+    });
+  }
+
+  /* --- backup: lado do Vigia --- */
+  var telaBk = document.getElementById('tela-backup');
+  var bkNome = document.getElementById('bk-nome');
+  var bkDia = document.getElementById('bk-dia');
+  var bkResumo = document.getElementById('bk-resumo');
+  var bkInfo = document.getElementById('bk-info');
+  var bkLista = document.getElementById('bk-lista');
+  var bkMsg = document.getElementById('bk-msg');
+  var btnBackup = document.getElementById('btn-backup');
+
+  function regsDoDia(dia){ return registros.filter(function(r){ return r.dia === dia; }); }
+
+  function renderResumoVigia(){
+    var n = regsDoDia(hoje()).length;
+    btnBackup.textContent = 'Backup do dia (' + n + ')';
+    if (!telaBk.classList.contains('ativo')) return;
+    var dia = bkDia.value || hoje();
+    var lista = regsDoDia(dia).sort(function(a, b){ return b.ts - a.ts; });
+    var c = contarRefs(lista);
+    celulas(bkResumo, [['Café', c.cafe], ['Almoço', c.almoco], ['Janta', c.janta], ['Total', c.total]]);
+    var ult = lerJson(KULT, null);
+    var txt = ult && ult.ts
+      ? 'Último backup às ' + horaDe(ult.ts) + ' de ' + dataBr(diaDe(ult.ts)) + '. Registros novos desde então: ' + registros.filter(function(r){ return r.ts > ult.ts; }).length + '.'
+      : 'Nenhum backup feito ainda neste aparelho.';
+    if (dbc) txt += ' Nuvem ativa: os registros já seguem ao ADM; o backup é uma cópia de segurança.';
+    bkInfo.textContent = txt;
+    bkLista.textContent = '';
+    lista.slice(0, 8).forEach(function(r){
+      bkLista.appendChild(el('div', 'dica', horaDe(r.ts) + ' · ' + REFS[r.ref] + ' · ' + fmt(r.numero) + ' · ' + (r.nome || SEM)));
+    });
+    if (lista.length > 8) bkLista.appendChild(el('div', 'dica', '+ ' + (lista.length - 8) + ' registros anteriores'));
+    if (!lista.length) bkLista.appendChild(el('div', 'dica', 'Nenhum registro neste dia.'));
+  }
+
+  function abrirBackup(){
+    lendo = false; cancelAnimationFrame(raf);
+    bkNome.value = lerTxt(KVIG);
+    bkDia.value = hoje();
+    bkMsg.textContent = '';
+    telaBk.classList.add('ativo');
+    renderResumoVigia();
+  }
+  function fecharBackup(){
+    telaBk.classList.remove('ativo');
+    bkMsg.textContent = '';
+    renderResumoVigia();
+    if (stream && scanner.classList.contains('ativo') && !scanner.classList.contains('achou') && !scanner.classList.contains('digitando')) { lendo = true; ciclo(); }
+  }
+
+  function montarBackup(dia){
+    return { tipo: 'parex-backup', versao: 1, vigia: lerTxt(KVIG).trim(), disp: disp, dia: dia, gerado: Date.now(), registros: regsDoDia(dia) };
+  }
+  function codificar(d){ return PREFIXO + btoa(unescape(encodeURIComponent(JSON.stringify(d)))); }
+  function nomeArquivo(dia){
+    var v = lerTxt(KVIG).trim().replace(/[^\w-]+/g, '_').replace(/^_+|_+$/g, '');
+    return 'backup-vigia' + (v ? '-' + v : '') + '-' + dia + '.json';
+  }
+  function baixar(nome, txt, mime){
+    var b = new Blob([txt], { type: mime });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(b); a.download = nome;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  function copiar(txt){
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(txt);
+    return new Promise(function(ok, no){
+      var t = document.createElement('textarea');
+      t.value = txt; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      var r = false; try { r = document.execCommand('copy'); } catch (e) {}
+      t.remove(); r ? ok() : no();
+    });
+  }
+  function marcarBackup(){ gravarJson(KULT, { ts: Date.now() }); renderResumoVigia(); }
+
+  function prepararEnvio(){
+    var dia = bkDia.value || hoje();
+    if (!lerTxt(KVIG).trim()) { bkMsg.textContent = 'Informe seu nome / posto para o ADM saber quem enviou.'; bkNome.focus(); return null; }
+    var d = montarBackup(dia);
+    if (!d.registros.length) { bkMsg.textContent = 'Nenhum registro neste dia para enviar.'; return null; }
+    return d;
+  }
+
+  bkNome.addEventListener('input', function(){ gravarTxt(KVIG, bkNome.value.trim().slice(0, 60)); });
+  bkDia.addEventListener('change', renderResumoVigia);
+  btnBackup.addEventListener('click', abrirBackup);
+  document.getElementById('bk-voltar').addEventListener('click', fecharBackup);
+
+  document.getElementById('bk-enviar').addEventListener('click', function(){
+    var d = prepararEnvio(); if (!d) return;
+    var json = JSON.stringify(d), nome = nomeArquivo(d.dia);
+    var f = null;
+    try { f = new File([json], nome, { type: 'application/json' }); } catch (e) {}
+    if (f && navigator.canShare && navigator.share && navigator.canShare({ files: [f] })) {
+      navigator.share({ files: [f], title: 'Backup do Vigia', text: 'Backup de alimentação — ' + d.vigia + ' — ' + dataBr(d.dia) })
+        .then(function(){ marcarBackup(); bkMsg.textContent = 'Backup enviado.'; })
+        .catch(function(e){
+          if (e && e.name === 'AbortError') return;
+          baixar(nome, json, 'application/json'); marcarBackup();
+          bkMsg.textContent = 'Não foi possível compartilhar. O arquivo foi baixado: envie-o ao ADM.';
+        });
+    } else {
+      baixar(nome, json, 'application/json'); marcarBackup();
+      bkMsg.textContent = 'Arquivo baixado (' + nome + '). Envie-o ao ADM por WhatsApp ou e-mail.';
+    }
+  });
+  document.getElementById('bk-baixar').addEventListener('click', function(){
+    var d = prepararEnvio(); if (!d) return;
+    baixar(nomeArquivo(d.dia), JSON.stringify(d), 'application/json'); marcarBackup();
+    bkMsg.textContent = 'Arquivo baixado. Envie-o ao ADM.';
+  });
+  document.getElementById('bk-copiar').addEventListener('click', function(){
+    var d = prepararEnvio(); if (!d) return;
+    var txt = 'Backup Parex — ' + d.vigia + ' — ' + dataBr(d.dia) + ' — ' + d.registros.length + ' registros\n' + codificar(d);
+    copiar(txt).then(function(){ marcarBackup(); bkMsg.textContent = 'Código copiado. Cole na conversa com o ADM (WhatsApp, e-mail...).'; })
+      .catch(function(){ bkMsg.textContent = 'Não foi possível copiar. Use "Baixar arquivo".'; });
+  });
+
+  /* --- backup: lado do ADM --- */
+  var ctDia = document.getElementById('ct-dia');
+  var ctMsg = document.getElementById('ct-msg');
+  var ctArq = document.getElementById('ct-arq');
+  var ctCod = document.getElementById('ct-cod');
+
+  function decodificar(txt){
+    txt = String(txt || '').trim();
+    try {
+      var m = txt.match(/PAREXBKP1:([A-Za-z0-9+\/=\s]+)/);
+      if (m) txt = decodeURIComponent(escape(atob(m[1].replace(/\s+/g, ''))));
+      var d = JSON.parse(txt);
+      if (d && d.tipo === 'parex-backup' && Array.isArray(d.registros)) return d;
+    } catch (e) {}
+    return null;
+  }
+  function limparReg(x, vig){
+    if (!x || typeof x !== 'object') return null;
+    var numero = String(x.numero || '').replace(/\s+/g, '');
+    if (!/^\d{8}$/.test(numero) || ORDEM.indexOf(x.ref) < 0) return null;
+    var ts = Number(x.ts); if (!isFinite(ts) || ts <= 0) return null;
+    var id = String(x.id || '').replace(/[^\w.-]/g, '_').slice(0, 60); if (!id) return null;
+    return { id: id, numero: numero, nome: String(x.nome || '').slice(0, 80), tipo: String(x.tipo || '').slice(0, 20),
+             ref: x.ref, ts: ts, dia: diaDe(ts), vigia: String(x.vigia || vig || '').slice(0, 60) };
+  }
+  function importarTexto(txt){
+    var d = decodificar(txt);
+    if (!d) return null;
+    var vig = String(d.vigia || '').slice(0, 60);
+    var conhecidos = {}; todosRegs().forEach(function(r){ conhecidos[r.id] = true; });
+    var novos = [], rep = 0, inv = 0;
+    d.registros.forEach(function(x){
+      var r = limparReg(x, vig);
+      if (!r) { inv++; return; }
+      if (conhecidos[r.id]) { rep++; return; }
+      conhecidos[r.id] = true; novos.push(r);
+    });
+    novos.forEach(function(r){
+      registros.push(r);
+      if (dbc) { try { dbc.doc('registros/' + r.id).set(r).catch(function(){}); } catch (e) {} }
+    });
+    salvarRegs();
+    importsLog.unshift({ vigia: vig || 'Sem identificação', dia: /^\d{4}-\d{2}-\d{2}$/.test(d.dia || '') ? d.dia : '', quando: Date.now(), novos: novos.length, rep: rep });
+    importsLog = importsLog.slice(0, 30); gravarJson(KIMP, importsLog);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d.dia || '')) ctDia.value = d.dia;
+    return { vigia: vig || 'Sem identificação', novos: novos.length, rep: rep, inv: inv };
+  }
+  function resumoImport(r, origem){
+    if (!r) return (origem || 'Conteúdo') + ': arquivo ou código inválido.';
+    return r.vigia + ': ' + r.novos + ' novo(s), ' + r.rep + ' já existia(m)' + (r.inv ? ', ' + r.inv + ' inválido(s)' : '') + '.';
+  }
+  function lerArquivo(f){
+    return new Promise(function(ok){
+      var fr = new FileReader();
+      fr.onload = function(){ ok(resumoImport(importarTexto(String(fr.result)), f.name)); };
+      fr.onerror = function(){ ok(f.name + ': não foi possível ler o arquivo.'); };
+      fr.readAsText(f);
+    });
+  }
+  ctArq.addEventListener('change', function(){
+    var arqs = Array.prototype.slice.call(ctArq.files || []);
+    if (!arqs.length) return;
+    arqs.reduce(function(p, f){ return p.then(function(acc){ return lerArquivo(f).then(function(m){ acc.push(m); return acc; }); }); }, Promise.resolve([]))
+      .then(function(msgs){ ctMsg.textContent = msgs.join('\n'); ctArq.value = ''; renderContab(); });
+  });
+  document.getElementById('ct-colar').addEventListener('click', function(){
+    if (!ctCod.value.trim()) { ctMsg.textContent = 'Cole o código recebido do Vigia.'; return; }
+    ctMsg.textContent = resumoImport(importarTexto(ctCod.value), 'Código');
+    ctCod.value = ''; renderContab();
+  });
+  ctDia.addEventListener('change', renderContab);
+
+  function renderContab(){
+    var dia = ctDia.value || hoje();
+    var todos = todosRegs();
+    var lista = todos.filter(function(r){ return r.dia === dia; }).sort(function(a, b){ return a.ts - b.ts; });
+    var porNum = {}; tickets.forEach(function(t){ porNum[t.numero] = t; });
+    var totalTk = {}; todos.forEach(function(r){ var k = r.numero + '|' + r.ref; totalTk[k] = (totalTk[k] || 0) + 1; });
+
+    var grupos = {}, ordemG = [];
+    lista.forEach(function(r){
+      var tk = porNum[r.numero];
+      var nome = ((tk && tk.nome) || r.nome || '').trim();
+      var chave = nome ? 'n:' + nome.toLowerCase() : 't:' + r.numero;
+      var g = grupos[chave];
+      if (!g) { g = grupos[chave] = { nome: nome, nums: {}, tipos: {}, refs: { cafe: 0, almoco: 0, janta: 0 }, horas: [], excesso: false }; ordemG.push(g); }
+      g.nums[r.numero] = true; g.tipos[(tk && tk.tipo) || r.tipo] = true;
+      g.refs[r.ref]++; g.horas.push(REFS[r.ref] + ' ' + horaDe(r.ts));
+      if (tk && tk[r.ref] > 0 && totalTk[r.numero + '|' + r.ref] > tk[r.ref]) g.excesso = true;
+    });
+
+    var c = contarRefs(lista);
+    celulas(document.getElementById('ct-resumo'), [['Café', c.cafe], ['Almoço', c.almoco], ['Janta', c.janta], ['Refeições', c.total], ['Colaboradores', ordemG.length]]);
+
+    var porVig = {};
+    lista.forEach(function(r){ var v = r.vigia || 'Sem identificação'; porVig[v] = (porVig[v] || 0) + 1; });
+    var boxV = document.getElementById('ct-vigias'); boxV.textContent = '';
+    Object.keys(porVig).sort().forEach(function(v){ boxV.appendChild(el('span', '', 'Vigia ' + v + ': ' + porVig[v])); });
+
+    var boxL = document.getElementById('ct-lista'); boxL.textContent = '';
+    if (!ordemG.length) boxL.appendChild(el('p', 'dica', 'Nenhuma refeição registrada em ' + dataBr(dia) + '.'));
+    ordemG.sort(function(a, b){
+      var x = a.nome || 'ÿ' + Object.keys(a.nums)[0], y = b.nome || 'ÿ' + Object.keys(b.nums)[0];
+      return x.localeCompare(y, 'pt-BR');
+    }).forEach(function(g){
+      var nums = Object.keys(g.nums);
+      var cart = el('div', 'cartao');
+      var l1 = el('div', 'l1');
+      l1.appendChild(el('span', 'nome' + (g.nome ? '' : ' sem'), g.nome || (SEM + ' — ticket ' + fmt(nums[0]))));
+      Object.keys(g.tipos).forEach(function(tp){ l1.appendChild(el('span', 'selo t-' + tp, TIPOS[tp] ? TIPOS[tp].nome : tp)); });
+      cart.appendChild(l1);
+      var rf = el('div', 'refs');
+      ORDEM.forEach(function(r){ if (g.refs[r]) rf.appendChild(el('span', '', REFS[r] + ': ' + g.refs[r])); });
+      cart.appendChild(rf);
+      cart.appendChild(el('small', 'dica', g.horas.join(' · ') + (g.nome ? ' — ticket ' + nums.map(fmt).join(', ') : '')));
+      if (g.excesso) cart.appendChild(el('div', 'alerta', 'Atenção: registros acima do limite do ticket.'));
+      boxL.appendChild(cart);
+    });
+
+    var imps = importsLog.slice(0, 5).map(function(i){
+      return i.vigia + (i.dia ? ' (dia ' + dataBr(i.dia) + ')' : '') + ' — ' + i.novos + ' novo(s) às ' + horaDe(i.quando) + ' de ' + dataBr(diaDe(i.quando));
+    });
+    document.getElementById('ct-imports').textContent = imps.length ? 'Últimos backups recebidos: ' + imps.join(' | ') : 'Nenhum backup recebido neste aparelho ainda.';
+  }
+
+  function csvCel(v){
+    v = String(v == null ? '' : v);
+    if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+    return '"' + v.replace(/"/g, '""') + '"';
+  }
+  document.getElementById('ct-csv').addEventListener('click', function(){
+    var dia = ctDia.value || hoje();
+    var porNum = {}; tickets.forEach(function(t){ porNum[t.numero] = t; });
+    var lista = todosRegs().filter(function(r){ return r.dia === dia; }).sort(function(a, b){ return a.ts - b.ts; });
+    if (!lista.length) { ctMsg.textContent = 'Nenhuma refeição registrada neste dia para exportar.'; return; }
+    var linhas = [['Data', 'Hora', 'Vigia', 'Ticket', 'Colaborador', 'Tipo', 'Refeição'].map(csvCel).join(';')];
+    lista.forEach(function(r){
+      var tk = porNum[r.numero];
+      var tp = (tk && tk.tipo) || r.tipo;
+      linhas.push([dataBr(r.dia), horaDe(r.ts), r.vigia || 'Sem identificação', fmt(r.numero), (tk && tk.nome) || r.nome || SEM,
+                   TIPOS[tp] ? TIPOS[tp].nome : tp, REFS[r.ref]].map(csvCel).join(';'));
+    });
+    baixar('refeicoes-' + dia + '.csv', '\ufeff' + linhas.join('\r\n'), 'text/csv;charset=utf-8');
+    ctMsg.textContent = 'Planilha gerada com ' + lista.length + ' registro(s).';
+  });
+
+  ctDia.value = hoje();
+  renderContab();
+  renderResumoVigia();
+
   (function iniciarDados(){
     try {
       if (window.claude && claude.use) {
@@ -814,6 +1275,10 @@ body{
             tickets = snap.docs.map(function(x){ return x.data(); });
             renderLista();
           }, function(){ dbc = null; carregarLocal(); });
+          d.collection('registros').onSnapshot(function(snap){
+            regsNuvem = snap.docs.map(function(x){ return x.data(); });
+            renderContab(); renderResumoVigia();
+          }, function(){});
         }).catch(carregarLocal);
         return;
       }
