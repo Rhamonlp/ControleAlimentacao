@@ -1,11 +1,11 @@
 {
  "tipo": "parex-tickets",
  "versao": 1,
- "gerado": 1793212636371,
+ "gerado": 1793273744641,
  "tickets": [
   {
    "numero": "80081041",
-   "nome": "TESTE",
+   "nome": "TESTE COLABORADOR DEMITIDO",
    "tipo": "demitido",
    "cafe": 1,
    "almoco": 1,
@@ -19,7 +19,7 @@
   },
   {
    "numero": "61389296",
-   "nome": "",
+   "nome": "TESTE COLABORADOR ATESTADO",
    "tipo": "atestado",
    "cafe": 1,
    "almoco": 1,
@@ -33,7 +33,7 @@
   },
   {
    "numero": "95866007",
-   "nome": "",
+   "nome": "TESTE COLABORADOR NOTURNO",
    "tipo": "noturno",
    "cafe": 1,
    "almoco": 1,
@@ -47,7 +47,7 @@
   },
   {
    "numero": "72635999",
-   "nome": "TESTE COLABORADOR",
+   "nome": "TESTE COLABORADOR NOVATO",
    "tipo": "novato",
    "cafe": 1,
    "almoco": 1,
