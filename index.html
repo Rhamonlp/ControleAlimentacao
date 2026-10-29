@@ -122,6 +122,8 @@ body{
 }
 .aviso-foto[hidden]{display:none}
 .scanner.com-aviso .status{display:none}
+.scanner video{transition:filter .15s}
+.scanner.flash video{filter:brightness(2.4)}
 .scanner.achou .aviso-foto,.scanner.digitando .aviso-foto{display:none}
 #tela-backup.ativo{align-items:flex-start}
 .resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
@@ -644,7 +646,40 @@ body{
     var vivo = stream.getTracks().some(function(t){ return t.readyState === 'live'; });
     if (vivo) { lendo = true; ciclo(); } else { parar(); abrir(); }
   }
-  document.getElementById('btn-foto').addEventListener('click', function(){ inFoto.click(); });
+  /* Captura um quadro da câmera ao vivo (sem abrir o app de câmera do celular) */
+  function capturarQuadro(){
+    var W = video.videoWidth, H = video.videoHeight, esc = Math.min(1, 1920 / Math.max(W, H));
+    var c = document.createElement('canvas');
+    c.width = Math.round(W * esc); c.height = Math.round(H * esc);
+    c.getContext('2d', { willReadFrequently: true }).drawImage(video, 0, 0, c.width, c.height);
+    return c;
+  }
+  function qrRecorteCentral(c){
+    if (!window.jsQR) return null;
+    var lado = Math.round(Math.min(c.width, c.height) * 0.8);
+    var d = c.getContext('2d').getImageData(Math.round((c.width - lado) / 2), Math.round((c.height - lado) / 2), lado, lado);
+    var code = jsQR(d.data, lado, lado, { inversionAttempts: 'attemptBoth' });
+    return (code && code.data) || null;
+  }
+  function cameraViva(){
+    return !!stream && video.videoWidth > 0 && video.readyState >= 2 &&
+      stream.getTracks().some(function(t){ return t.readyState === 'live'; });
+  }
+  document.getElementById('btn-foto').addEventListener('click', function(){
+    if (!cameraViva()) { inFoto.click(); return; }   /* sem câmera ao vivo: usa o app de câmera do celular */
+    lendo = false; cancelAnimationFrame(raf);
+    scanner.classList.add('flash'); setTimeout(function(){ scanner.classList.remove('flash'); }, 180);
+    avisar('Lendo o QR code...');
+    var quadro = capturarQuadro();
+    decodificarFoto(quadro).then(function(v){ return v || qrRecorteCentral(quadro); }).then(function(txt){
+      if (txt) { avisar(''); achou(txt); return; }
+      avisar('Não encontrei o QR code. Centralize-o no quadrado, aproxime um pouco e toque em "Tirar foto" de novo.');
+      retomarLeitura();
+    }).catch(function(){
+      avisar('Não foi possível ler o QR code. Tente de novo.');
+      retomarLeitura();
+    });
+  });
   inFoto.addEventListener('change', function(){
     var f = inFoto.files && inFoto.files[0];
     inFoto.value = '';
