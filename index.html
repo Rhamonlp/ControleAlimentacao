@@ -105,8 +105,9 @@ body{
 .btn-backup:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .scanner.achou .btn-backup,.scanner.digitando .btn-backup{display:none}
 .btn-foto{
-  position:absolute;right:16px;top:calc(env(safe-area-inset-top,0px) + 68px);
-  min-height:44px;padding:0 18px;border-radius:22px;border:0;cursor:pointer;
+  position:absolute;left:50%;transform:translateX(-50%);
+  top:calc(50% + min(70vw,300px) / 2 + 18px);
+  min-height:48px;padding:0 26px;border-radius:24px;border:0;cursor:pointer;white-space:nowrap;
   background:var(--navy);color:#fff;
   font:700 .95rem/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   box-shadow:0 0 0 2px rgba(255,255,255,.7);
@@ -115,11 +116,12 @@ body{
 .scanner.achou .btn-foto,.scanner.digitando .btn-foto{display:none}
 .aviso-foto{
   position:absolute;left:16px;right:16px;margin:0 auto;max-width:420px;
-  bottom:calc(env(safe-area-inset-bottom,0px) + 96px);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
   background:rgba(0,0,0,.75);color:#fff;border-radius:12px;padding:12px 14px;text-align:center;
   font:500 .95rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 .aviso-foto[hidden]{display:none}
+.scanner.com-aviso .status{display:none}
 .scanner.achou .aviso-foto,.scanner.digitando .aviso-foto{display:none}
 #tela-backup.ativo{align-items:flex-start}
 .resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
@@ -531,7 +533,7 @@ body{
     scanner.classList.remove('ativo', 'achou', 'digitando');
     fMan.reset(); erroMan.textContent = '';
     if (telaBk) telaBk.classList.remove('ativo');
-    if (avisoFoto) avisoFoto.hidden = true;
+    if (avisoFoto) { avisoFoto.hidden = true; scanner.classList.remove('com-aviso'); }
   }
 
   function achou(texto){
@@ -593,8 +595,9 @@ body{
   function avisar(txt){
     avisoFoto.textContent = txt || '';
     avisoFoto.hidden = !txt;
+    scanner.classList.toggle('com-aviso', !!txt);
     clearTimeout(avisoT);
-    if (txt) avisoT = setTimeout(function(){ avisoFoto.hidden = true; }, 7000);
+    if (txt) avisoT = setTimeout(function(){ avisoFoto.hidden = true; scanner.classList.remove('com-aviso'); }, 7000);
   }
   function imagemViaTag(file){
     return new Promise(function(ok, no){
