@@ -223,6 +223,17 @@ body{
 .num{font:700 1.4rem/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:var(--navy)}
 .selo{color:#fff;border-radius:999px;padding:5px 12px;font-size:.85rem;font-weight:700}
 .t-novato{background:#1c1a6e}.t-demitido{background:#b3261e}.t-atestado{background:#0f6b4b}.t-noturno{background:#37474f}
+.mn-refs{display:flex;flex-wrap:wrap;gap:4px 18px}
+.mn-cor{display:flex;align-items:center;gap:12px}
+.campo input[type=color]{min-height:52px;width:84px;padding:4px;cursor:pointer}
+.mn-linha{display:flex;gap:10px}
+.mn-linha .btn{max-width:none;flex:1;width:auto}
+.mn-item{border:2px solid #e3e3ec;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.mn-item .mn-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mn-item small{color:#555;line-height:1.35}
+.mn-acoes{display:flex;gap:8px}
+.mn-acoes .btn{max-width:none;width:auto;flex:1;min-height:42px;padding:0 8px;font-size:.9rem}
+.mn-form-edit{border-color:var(--accent)}
 .cartao .nome{font-weight:600;word-break:break-word}
 .refs{display:flex;flex-wrap:wrap;gap:8px}
 .refs span{background:#f1f1f6;border-radius:8px;padding:5px 10px;font-size:.9rem}
@@ -411,6 +422,42 @@ body{
       <p class="erro" id="tk-msg" role="alert"></p>
       <button type="submit" class="btn btn-adm" id="btn-gerar">Gerar ticket</button>
     </form>
+    <div class="bloco" id="bloco-minutas">
+      <h2 id="mn-titulo">Minutas de ticket</h2>
+      <p class="dica">Crie modelos para outras situações (além de Novato, Demitido, Atestado e Noturno). A minuta guarda o nome, a cor, as refeições e as quantidades padrão, e aparece em <b>Tipo de ticket</b> na hora de gerar.</p>
+      <div class="campo">
+        <label for="mn-nome">Nome da situação</label>
+        <input id="mn-nome" type="text" maxlength="30" autocomplete="off" placeholder="Ex.: Visitante, Terceirizado, Treinamento">
+      </div>
+      <div class="campo">
+        <label for="mn-info">Descrição <span class="opc">(opcional)</span></label>
+        <input id="mn-info" type="text" maxlength="120" autocomplete="off" placeholder="Ex.: Visita técnica. Direito a almoço.">
+      </div>
+      <div class="campo">
+        <label for="mn-cor">Cor do selo</label>
+        <input id="mn-cor" type="color" value="#7b1fa2">
+      </div>
+      <p class="dica">Refeições que este ticket permite:</p>
+      <div class="mn-refs">
+        <label class="chk"><input type="checkbox" id="mn-r-cafe" checked> Café</label>
+        <label class="chk"><input type="checkbox" id="mn-r-almoco" checked> Almoço</label>
+        <label class="chk"><input type="checkbox" id="mn-r-janta" checked> Janta</label>
+      </div>
+      <label class="chk"><input type="checkbox" id="mn-ilim"> Ilimitado (vale todos os dias)</label>
+      <p class="dica">Quantidade padrão de cada refeição:</p>
+      <div class="qtds">
+        <div class="campo" id="ml-cafe"><label for="mn-q-cafe">Café</label><input id="mn-q-cafe" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+        <div class="campo" id="ml-almoco"><label for="mn-q-almoco">Almoço</label><input id="mn-q-almoco" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+        <div class="campo" id="ml-janta"><label for="mn-q-janta">Janta</label><input id="mn-q-janta" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
+      </div>
+      <p class="erro" id="mn-msg" role="alert"></p>
+      <div class="mn-linha">
+        <button type="button" class="btn btn-adm" id="mn-salvar">Salvar minuta</button>
+        <button type="button" class="btn btn-sec" id="mn-cancelar" style="display:none">Cancelar</button>
+      </div>
+      <h2 style="margin-top:6px" id="mn-lista-titulo">Minutas salvas</h2>
+      <div class="lista" id="mn-lista"></div>
+    </div>
     <div class="bloco" id="bloco-github">
       <h2>Backup no GitHub</h2>
       <p class="dica">Exporte o <b>tickets.json</b> e coloque no GitHub. Os aparelhos importam o arquivo sozinhos sempre que ele for atualizado.</p>
@@ -823,6 +870,7 @@ body{
   }
 
   function mostrarTicketVigia(t, aviso){
+    tipoDeTicket(t);
     var tp = TIPOS[t.tipo];
     rTitulo.textContent = 'Ticket ' + fmt(t.numero);
     vinfo.textContent = '';
@@ -909,7 +957,7 @@ body{
   function fmt(n){ return n.slice(0, 4) + ' ' + n.slice(4); }
   function qtd(v){ return Math.max(1, Math.min(30, parseInt(v, 10) || 1)); }
 
-  function aplicarTipo(){
+  function aplicarTipo(usarPadrao){
     var t = TIPOS[selTipo.value];
     infoTipo.textContent = t.info;
     ORDEM.forEach(function(r){
@@ -919,8 +967,16 @@ body{
       inp.value = ok ? (inp.value && inp.value !== '0' ? inp.value : '1') : '0';
       document.getElementById('l-' + r).classList.toggle('off', !ok);
     });
+    if (usarPadrao === true && t.padrao) {
+      ORDEM.forEach(function(r){
+        if (t.refs.indexOf(r) > -1) document.getElementById('q-' + r).value = String(qtd(t.padrao[r]));
+      });
+      var ck = document.getElementById('tk-ilim');
+      ck.checked = !!t.padrao.ilim;
+      ck.dispatchEvent(new Event('change'));
+    }
   }
-  selTipo.addEventListener('change', aplicarTipo);
+  selTipo.addEventListener('change', function(){ aplicarTipo(true); });
   aplicarTipo();
 
   function carregarLocal(){
@@ -1054,6 +1110,7 @@ body{
   function renderLista(){
     if (typeof renderLixeira === 'function') renderLixeira();
     if (typeof renderGhInfo === 'function' && ghInfo) renderGhInfo();
+    tickets.forEach(function(t){ tipoDeTicket(t); });
     var todos = tickets.slice().sort(function(a, b){ return (b.criado || 0) - (a.criado || 0); });
     var f = selFiltro.value;
     var ord = todos.filter(function(t){ return f === 'sem' ? !t.nome : f === 'com' ? !!t.nome : true; });
@@ -1137,6 +1194,7 @@ body{
                  usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Date.now() + i,
                  ilimitado: document.getElementById('tk-ilim').checked, diaUso: '' };
       ORDEM.forEach(function(r){ if (tp.refs.indexOf(r) > -1) tk[r] = qtd(document.getElementById('q-' + r).value); });
+      marcaTipo(tk);
       lote.push(tk);
     }
     btnGerar.disabled = true;
@@ -1467,13 +1525,212 @@ body{
   });
 
 
+  /* ---------- Minutas (modelos de ticket para outras situações) ---------- */
+  var KMIN = 'parex_minutas';
+  var COR_PAD = '#7b1fa2';
+  var estiloTipos = document.createElement('style');
+  document.head.appendChild(estiloTipos);
+
+  function corOk(c){ return /^#[0-9a-fA-F]{6}$/.test(c || '') ? c : COR_PAD; }
+  function limparMinuta(x){
+    if (!x || typeof x !== 'object') return null;
+    var id = String(x.id || '');
+    var nome = String(x.nome || '').trim().slice(0, 30);
+    if (!/^m_[a-z0-9]{3,20}$/.test(id) || !nome) return null;
+    var refs = ORDEM.filter(function(r){ return Array.isArray(x.refs) && x.refs.indexOf(r) > -1; });
+    if (!refs.length) return null;
+    var p = x.padrao || {};
+    return { id: id, nome: nome, info: String(x.info || '').trim().slice(0, 120), cor: corOk(x.cor), refs: refs,
+             padrao: { cafe: qtd(p.cafe), almoco: qtd(p.almoco), janta: qtd(p.janta), ilim: p.ilim === true } };
+  }
+  var minutas = lerJson(KMIN, []);
+  if (!Array.isArray(minutas)) minutas = [];
+  minutas = minutas.map(limparMinuta).filter(Boolean);
+  function salvarMinutas(){ gravarJson(KMIN, minutas); }
+
+  function atualizarEstilosTipos(){
+    var css = '';
+    Object.keys(TIPOS).forEach(function(k){ if (TIPOS[k].custom) css += '.t-' + k + '{background:' + corOk(TIPOS[k].cor) + '}'; });
+    estiloTipos.textContent = css;
+  }
+  function registrarTipo(id, nome, cor, refs, info, padrao){
+    TIPOS[id] = { nome: nome, refs: refs, custom: true, cor: corOk(cor), padrao: padrao || null,
+                  info: info || ('Situação personalizada. Direito a ' + refs.map(function(r){ return REFS[r].toLowerCase(); }).join(', ') + '.') };
+    atualizarEstilosTipos();
+  }
+  function registrarMinuta(m){ registrarTipo(m.id, m.nome, m.cor, m.refs, m.info, m.padrao); }
+
+  /* Ticket de minuta carrega nome/cor/refeições: funciona em qualquer aparelho, mesmo sem a minuta */
+  function marcaTipo(t){
+    var d = TIPOS[t.tipo];
+    if (d && d.custom) { t.tipoNome = d.nome; t.tipoCor = d.cor; t.tipoRefs = d.refs.slice(); }
+    return t;
+  }
+  function tipoDeTicket(x){
+    if (!x || TIPOS[x.tipo]) return TIPOS[x && x.tipo] || null;
+    if (!/^m_[a-z0-9]{3,20}$/.test(String(x.tipo || ''))) return null;
+    var nome = String(x.tipoNome || '').trim().slice(0, 30);
+    if (!nome) return null;
+    var refs = ORDEM.filter(function(r){ return Array.isArray(x.tipoRefs) ? x.tipoRefs.indexOf(r) > -1 : x[r] > 0; });
+    if (!refs.length) refs = ORDEM.slice();
+    registrarTipo(x.tipo, nome, x.tipoCor, refs, '', null);
+    return TIPOS[x.tipo];
+  }
+  minutas.forEach(registrarMinuta);
+
+  function mesclarMinutas(lista){
+    var mudou = false;
+    lista.forEach(function(x){
+      var m = limparMinuta(x);
+      if (!m || minutas.some(function(o){ return o.id === m.id; })) return;
+      minutas.push(m); registrarMinuta(m); mudou = true;
+    });
+    if (mudou) { salvarMinutas(); renderMinutas(); }
+  }
+
+  var mnNome = document.getElementById('mn-nome'), mnInfo = document.getElementById('mn-info');
+  var mnCor = document.getElementById('mn-cor'), mnIlim = document.getElementById('mn-ilim');
+  var mnMsg = document.getElementById('mn-msg'), mnLista = document.getElementById('mn-lista');
+  var mnSalvar = document.getElementById('mn-salvar'), mnCancelar = document.getElementById('mn-cancelar');
+  var mnTitulo = document.getElementById('mn-titulo'), mnBloco = document.getElementById('bloco-minutas');
+  var mnEditId = '';
+
+  function mnSincQtd(){
+    ORDEM.forEach(function(r){
+      var ok = document.getElementById('mn-r-' + r).checked;
+      document.getElementById('mn-q-' + r).disabled = !ok;
+      document.getElementById('ml-' + r).classList.toggle('off', !ok);
+    });
+  }
+  ORDEM.forEach(function(r){ document.getElementById('mn-r-' + r).addEventListener('change', mnSincQtd); });
+  mnSincQtd();
+
+  function mnLimparForm(){
+    mnEditId = '';
+    mnNome.value = ''; mnInfo.value = ''; mnCor.value = COR_PAD; mnIlim.checked = false;
+    ORDEM.forEach(function(r){ document.getElementById('mn-r-' + r).checked = true; document.getElementById('mn-q-' + r).value = '1'; });
+    mnSincQtd();
+    mnMsg.textContent = '';
+    mnTitulo.textContent = 'Minutas de ticket';
+    mnSalvar.textContent = 'Salvar minuta';
+    mnCancelar.style.display = 'none';
+    mnBloco.classList.remove('mn-form-edit');
+  }
+  function mnEditar(m){
+    mnEditId = m.id;
+    mnNome.value = m.nome; mnInfo.value = m.info; mnCor.value = m.cor; mnIlim.checked = !!m.padrao.ilim;
+    ORDEM.forEach(function(r){
+      document.getElementById('mn-r-' + r).checked = m.refs.indexOf(r) > -1;
+      document.getElementById('mn-q-' + r).value = String(m.padrao[r]);
+    });
+    mnSincQtd();
+    mnMsg.textContent = '';
+    mnTitulo.textContent = 'Editando minuta: ' + m.nome;
+    mnSalvar.textContent = 'Salvar alterações';
+    mnCancelar.style.display = '';
+    mnBloco.classList.add('mn-form-edit');
+    mnBloco.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    mnNome.focus();
+  }
+  mnCancelar.addEventListener('click', mnLimparForm);
+
+  function novoIdMinuta(){
+    for (var i = 0; i < 30; i++) {
+      var id = 'm_' + crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(0, 8);
+      if (/^m_[a-z0-9]{3,20}$/.test(id) && !minutas.some(function(m){ return m.id === id; }) && !TIPOS[id]) return id;
+    }
+    return 'm_' + Date.now().toString(36);
+  }
+
+  mnSalvar.addEventListener('click', function(){
+    var nome = mnNome.value.trim();
+    if (!nome) { mnMsg.textContent = 'Dê um nome para a situação.'; mnNome.focus(); return; }
+    var dup = minutas.some(function(m){ return m.id !== mnEditId && m.nome.toLowerCase() === nome.toLowerCase(); });
+    var nativo = Object.keys(TIPOS).some(function(k){ return !TIPOS[k].custom && TIPOS[k].nome.toLowerCase() === nome.toLowerCase(); });
+    if (dup || nativo) { mnMsg.textContent = 'Já existe um tipo com esse nome.'; mnNome.focus(); return; }
+    var refs = ORDEM.filter(function(r){ return document.getElementById('mn-r-' + r).checked; });
+    if (!refs.length) { mnMsg.textContent = 'Marque pelo menos uma refeição.'; return; }
+    var m = limparMinuta({
+      id: mnEditId || novoIdMinuta(), nome: nome, info: mnInfo.value, cor: mnCor.value, refs: refs,
+      padrao: { cafe: document.getElementById('mn-q-cafe').value, almoco: document.getElementById('mn-q-almoco').value,
+                janta: document.getElementById('mn-q-janta').value, ilim: mnIlim.checked }
+    });
+    if (!m) { mnMsg.textContent = 'Não foi possível salvar a minuta.'; return; }
+    var editou = !!mnEditId;
+    if (editou) minutas = minutas.map(function(o){ return o.id === m.id ? m : o; }); else minutas.push(m);
+    registrarMinuta(m);
+    salvarMinutas();
+    mnLimparForm();
+    renderMinutas();
+    mnMsg.textContent = 'Minuta "' + m.nome + '" ' + (editou ? 'atualizada.' : 'salva. Ela já aparece em Tipo de ticket.');
+    renderLista();
+  });
+
+  function montarOpcoes(sel){
+    if (!sel) return;
+    var atual = sel.value;
+    sel.textContent = '';
+    ['novato','demitido','atestado','noturno'].forEach(function(k){
+      var o = document.createElement('option'); o.value = k; o.textContent = TIPOS[k].nome; sel.appendChild(o);
+    });
+    if (minutas.length) {
+      var g = document.createElement('optgroup'); g.label = 'Minutas';
+      minutas.forEach(function(m){ var o = document.createElement('option'); o.value = m.id; o.textContent = m.nome; g.appendChild(o); });
+      sel.appendChild(g);
+    }
+    if (TIPOS[atual]) sel.value = atual;
+  }
+
+  function renderMinutas(){
+    montarOpcoes(selTipo);
+    montarOpcoes(rsTipo);
+    mnLista.textContent = '';
+    if (!minutas.length) mnLista.appendChild(el('p', 'dica', 'Nenhuma minuta criada ainda.'));
+    minutas.forEach(function(m){
+      var c = el('div', 'mn-item');
+      var top = el('div', 'mn-top');
+      top.appendChild(el('span', 'selo t-' + m.id, m.nome));
+      top.appendChild(el('small', '', m.refs.map(function(r){ return REFS[r] + ' ×' + m.padrao[r]; }).join(' · ') + (m.padrao.ilim ? ' · ilimitado' : '')));
+      c.appendChild(top);
+      if (m.info) c.appendChild(el('small', '', m.info));
+      var ac = el('div', 'mn-acoes');
+      var bu = el('button', 'btn btn-adm', 'Usar'); bu.type = 'button';
+      bu.addEventListener('click', function(){
+        selTipo.value = m.id; aplicarTipo(true);
+        fTicket.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        inNome.focus();
+      });
+      var be = el('button', 'btn btn-sec', 'Editar'); be.type = 'button';
+      be.addEventListener('click', function(){ mnEditar(m); });
+      var bx = el('button', 'btn btn-sec', 'Excluir'); bx.type = 'button';
+      bx.addEventListener('click', function(){
+        if (!bx.dataset.c) {
+          bx.dataset.c = '1'; bx.textContent = 'Confirmar?';
+          setTimeout(function(){ if (bx.isConnected) { delete bx.dataset.c; bx.textContent = 'Excluir'; } }, 4000);
+          return;
+        }
+        minutas = minutas.filter(function(o){ return o.id !== m.id; });
+        salvarMinutas();
+        if (mnEditId === m.id) mnLimparForm();
+        renderMinutas();
+        mnMsg.textContent = 'Minuta excluída. Os tickets já gerados continuam válidos.';
+      });
+      ac.appendChild(bu); ac.appendChild(be); ac.appendChild(bx);
+      c.appendChild(ac);
+      mnLista.appendChild(c);
+    });
+    if (typeof aplicarTipo === 'function') aplicarTipo();
+    if (rsTipo && typeof aplicarTipoRs === 'function') aplicarTipoRs();
+  }
+  renderMinutas();
+
   /* ---------- Colocar de volta um ticket apagado ---------- */
   var KLIX = 'parex_lixeira';
   var lixeira = lerJson(KLIX, []); if (!Array.isArray(lixeira)) lixeira = [];
   var rsNum = document.getElementById('rs-num'), rsNome = document.getElementById('rs-nome');
   var rsTipo = document.getElementById('rs-tipo'), rsMsg = document.getElementById('rs-msg');
   var rsLix = document.getElementById('rs-lixeira'), rsTit = document.getElementById('rs-titulo-lixeira');
-  rsTipo.innerHTML = selTipo.innerHTML;
+  renderMinutas();
 
   function soDigitos(v){ return String(v || '').replace(/\D/g, ''); }
   function guardarLixeira(t){
@@ -1555,6 +1812,7 @@ body{
       t[r] = qtd(document.getElementById('rs-' + r).value);
       t.usado[r] = Math.max(l ? usadoDe(l, r) : 0, ur[r]);
     });
+    marcaTipo(t);
     colocarTicket(t).then(function(){
       rsMsg.textContent = 'Ticket ' + fmt(n) + ' colocado de volta na lista.';
       rsNum.value = ''; rsNome.value = '';
@@ -1640,7 +1898,8 @@ body{
   function limparTicket(x){
     if (!x || typeof x !== 'object') return null;
     var n = String(x.numero || '').replace(/\s+/g, '');
-    if (!/^\d{8}$/.test(n) || !TIPOS[x.tipo]) return null;
+    if (!/^\d{8}$/.test(n)) return null;
+    if (!TIPOS[x.tipo] && !tipoDeTicket(x)) return null;
     var t = { numero: n, nome: String(x.nome || '').slice(0, 80), tipo: x.tipo, cafe: 0, almoco: 0, janta: 0,
               usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Number(x.criado) || Date.now(),
               ilimitado: x.ilimitado === true, diaUso: /^\d{4}-\d{2}-\d{2}$/.test(x.diaUso || '') ? x.diaUso : '' };
@@ -1648,6 +1907,7 @@ body{
       t[r] = Math.max(0, Math.min(30, parseInt(x[r], 10) || 0));
       t.usado[r] = Math.max(0, Math.min(99, parseInt(x.usado && x.usado[r], 10) || 0));
     });
+    marcaTipo(t);
     return t;
   }
   /* auto = true: não traz de volta os tickets que o ADM apagou neste aparelho */
@@ -1690,6 +1950,7 @@ body{
       var d; try { d = JSON.parse(txt); } catch (e) { throw new Error('formato'); }
       var lista = Array.isArray(d) ? d : (d && Array.isArray(d.tickets) ? d.tickets : null);
       if (!lista) throw new Error('formato');
+      if (d && Array.isArray(d.minutas)) mesclarMinutas(d.minutas);
       if (auto && lerTxt(KGHS) === sig) return { novos: 0, atualizados: 0, total: lista.length, invalidos: 0, igual: true };
       return mesclarTickets(lista, auto).then(function(res){ gravarTxt(KGHS, sig); return res; });
     }).then(function(res){
@@ -1727,7 +1988,7 @@ body{
   document.getElementById('gh-sync-v').addEventListener('click', function(){ acaoSync(bkMsg, this); });
   document.getElementById('gh-baixar').addEventListener('click', function(){
     if (!tickets.length) { ghMsg.textContent = 'Não há tickets para exportar.'; return; }
-    var arq = { tipo: 'parex-tickets', versao: 1, gerado: Date.now(), tickets: tickets.map(function(t){
+    var arq = { tipo: 'parex-tickets', versao: 1, gerado: Date.now(), minutas: minutas, tickets: tickets.map(function(t){
       var c = {}; for (var k in t) c[k] = t[k]; if (!INCLUIR_NOMES) c.nome = ''; return c; }) };
     baixar('tickets.json', JSON.stringify(arq, null, 1), 'application/json');
     ghMsg.textContent = 'tickets.json exportado com ' + tickets.length + ' ticket(s). Envie-o ao repositório ControleAlimentacao no GitHub, substituindo o anterior.';
