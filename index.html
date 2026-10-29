@@ -121,6 +121,8 @@ body{
   font:500 .95rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
 .aviso-foto[hidden]{display:none}
+.chk{display:flex;gap:10px;align-items:center;min-height:44px;font-weight:600;color:var(--navy);cursor:pointer}
+.chk input{width:22px;height:22px;flex:none;accent-color:var(--navy)}
 .scanner.com-aviso .status{display:none}
 .scanner video{transition:filter .15s}
 .scanner.flash video{filter:brightness(2.4)}
@@ -399,7 +401,8 @@ body{
         </select>
       </div>
       <p class="dica" id="tk-info"></p>
-      <p class="dica">Quantidade que cada ticket permite pegar de cada refeição:</p>
+      <label class="chk"><input type="checkbox" id="tk-ilim"> Ilimitado (vale todos os dias)</label>
+      <p class="dica" id="tk-qtd-info">Quantidade que cada ticket permite pegar de cada refeição:</p>
       <div class="qtds">
         <div class="campo" id="l-cafe"><label for="q-cafe">Café</label><input id="q-cafe" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
         <div class="campo" id="l-almoco"><label for="q-almoco">Almoço</label><input id="q-almoco" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
@@ -432,6 +435,7 @@ body{
         <label for="rs-tipo">Tipo de ticket</label>
         <select id="rs-tipo"></select>
       </div>
+      <label class="chk"><input type="checkbox" id="rs-ilim"> Ilimitado (vale todos os dias)</label>
       <div class="qtds">
         <div class="campo" id="rl-cafe"><label for="rs-cafe">Café</label><input id="rs-cafe" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
         <div class="campo" id="rl-almoco"><label for="rs-almoco">Almoço</label><input id="rs-almoco" type="number" min="1" max="30" value="1" inputmode="numeric"></div>
@@ -782,7 +786,11 @@ body{
     for (var i = 0; i < tickets.length; i++) if (tickets[i].numero === num) return tickets[i];
     return null;
   }
-  function usadoDe(t, r){ return (t.usado && t.usado[r]) || 0; }
+  /* Ticket ilimitado: as quantidades valem POR DIA; o uso zera quando muda o dia. */
+  function usadoDe(t, r){
+    if (t.ilimitado && t.diaUso !== hoje()) return 0;
+    return (t.usado && t.usado[r]) || 0;
+  }
 
   var leituraId = 0;
   function naoEncontrado(texto, manual, atualizando, falhou){
@@ -823,12 +831,13 @@ body{
     topo.appendChild(el('span', 'selo t-' + t.tipo, tp ? tp.nome : t.tipo));
     vinfo.appendChild(topo);
     vinfo.appendChild(el('div', 'v-nome' + (t.nome ? '' : ' sem'), t.nome || SEM));
+    if (t.ilimitado) vinfo.appendChild(el('small', '', 'Ticket ilimitado: as refeições renovam todos os dias.'));
 
     var restam = 0;
     ORDEM.forEach(function(r){ if (t[r] > 0) restam += Math.max(0, t[r] - usadoDe(t, r)); });
     vinfo.appendChild(restam > 0
       ? el('div', 'v-status v-ok', 'Ticket válido')
-      : el('div', 'v-status v-no', 'Todas as refeições já foram usadas'));
+      : el('div', 'v-status v-no', t.ilimitado ? 'Todas as refeições de hoje já foram usadas' : 'Todas as refeições já foram usadas'));
     if (aviso) vinfo.appendChild(el('small', '', aviso));
 
     ORDEM.forEach(function(r){
@@ -837,7 +846,7 @@ body{
       var lin = el('div', 'v-linha');
       var txt = el('div', '');
       txt.appendChild(el('b', '', REFS[r]));
-      txt.appendChild(el('small', '', 'Usado ' + u + ' de ' + t[r] + (falta > 0 ? ' — restam ' + falta : ' — esgotado')));
+      txt.appendChild(el('small', '', (t.ilimitado ? 'Usado hoje ' : 'Usado ') + u + ' de ' + t[r] + (falta > 0 ? ' — restam ' + falta : (t.ilimitado ? ' — esgotado hoje' : ' — esgotado'))));
       lin.appendChild(txt);
       var b = el('button', 'btn btn-adm', 'Registrar'); b.type = 'button';
       b.disabled = falta <= 0;
@@ -850,10 +859,11 @@ body{
   function registrarUso(numero, r, btn){
     var atual = acharTicket(numero);
     if (!atual) return;
-    if (usadoDe(atual, r) >= atual[r]) { mostrarTicketVigia(atual, REFS[r] + ' já está esgotado.'); return; }
+    if (usadoDe(atual, r) >= atual[r]) { mostrarTicketVigia(atual, REFS[r] + (atual.ilimitado ? ' já foi usado hoje.' : ' já está esgotado.')); return; }
     var c = {}; for (var k in atual) c[k] = atual[k];
     c.usado = { cafe: usadoDe(atual, 'cafe'), almoco: usadoDe(atual, 'almoco'), janta: usadoDe(atual, 'janta') };
     c.usado[r] += 1;
+    if (c.ilimitado) c.diaUso = hoje();
     btn.disabled = true;
     atualizar(c).then(function(){
       registrar(c, r);
@@ -962,7 +972,8 @@ body{
 
   function chips(box, t){
     box.textContent = '';
-    ORDEM.forEach(function(r){ if (t[r] > 0) box.appendChild(el('span', '', REFS[r] + ': ' + t[r])); });
+    if (t.ilimitado) box.appendChild(el('span', '', 'Todos os dias'));
+    ORDEM.forEach(function(r){ if (t[r] > 0) box.appendChild(el('span', '', REFS[r] + ': ' + t[r] + (t.ilimitado ? '/dia' : ''))); });
   }
 
   function mostrarTicket(t){
@@ -1013,7 +1024,7 @@ body{
       it.appendChild(el('div', 'tk-linha'));
       var partes = [];
       ORDEM.forEach(function(r){ if (t[r] > 0) partes.push(REFS[r] + (t[r] > 1 ? ' ×' + t[r] : '')); });
-      it.appendChild(el('div', 'tk-refs', partes.join(' · ')));
+      it.appendChild(el('div', 'tk-refs', partes.join(' · ') + (t.ilimitado ? ' (por dia) · ILIMITADO' : '')));
       g.appendChild(it);
     });
     modalLote.classList.add('ativo');
@@ -1107,6 +1118,11 @@ body{
     });
   }
 
+  document.getElementById('tk-ilim').addEventListener('change', function(){
+    document.getElementById('tk-qtd-info').textContent = this.checked
+      ? 'Ilimitado: quantidade que o ticket permite pegar de cada refeição POR DIA (renova todo dia):'
+      : 'Quantidade que cada ticket permite pegar de cada refeição:';
+  });
   fTicket.addEventListener('submit', function(e){
     e.preventDefault();
     var nome = inNome.value.trim();
@@ -1118,7 +1134,8 @@ body{
       if (!num) { msgTk.textContent = 'Não foi possível gerar o número. Tente de novo.'; return; }
       usados.push(num);
       var tk = { numero: num, nome: nome, tipo: selTipo.value, cafe: 0, almoco: 0, janta: 0,
-                 usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Date.now() + i };
+                 usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Date.now() + i,
+                 ilimitado: document.getElementById('tk-ilim').checked, diaUso: '' };
       ORDEM.forEach(function(r){ if (tp.refs.indexOf(r) > -1) tk[r] = qtd(document.getElementById('q-' + r).value); });
       lote.push(tk);
     }
@@ -1377,7 +1394,10 @@ body{
     var todos = todosRegs();
     var lista = todos.filter(function(r){ return r.dia === dia; }).sort(function(a, b){ return a.ts - b.ts; });
     var porNum = {}; tickets.forEach(function(t){ porNum[t.numero] = t; });
-    var totalTk = {}; todos.forEach(function(r){ var k = r.numero + '|' + r.ref; totalTk[k] = (totalTk[k] || 0) + 1; });
+    var totalTk = {}; todos.forEach(function(r){
+      var k = r.numero + '|' + r.ref; totalTk[k] = (totalTk[k] || 0) + 1;
+      var kd = k + '|' + r.dia; totalTk[kd] = (totalTk[kd] || 0) + 1;
+    });
 
     var grupos = {}, ordemG = [];
     lista.forEach(function(r){
@@ -1388,7 +1408,7 @@ body{
       if (!g) { g = grupos[chave] = { nome: nome, nums: {}, tipos: {}, refs: { cafe: 0, almoco: 0, janta: 0 }, horas: [], excesso: false }; ordemG.push(g); }
       g.nums[r.numero] = true; g.tipos[(tk && tk.tipo) || r.tipo] = true;
       g.refs[r.ref]++; g.horas.push(REFS[r.ref] + ' ' + horaDe(r.ts));
-      if (tk && tk[r.ref] > 0 && totalTk[r.numero + '|' + r.ref] > tk[r.ref]) g.excesso = true;
+      if (tk && tk[r.ref] > 0 && totalTk[r.numero + '|' + r.ref + (tk.ilimitado ? '|' + r.dia : '')] > tk[r.ref]) g.excesso = true;
     });
 
     var c = contarRefs(lista);
@@ -1478,6 +1498,7 @@ body{
 
   function preencherRs(t){
     rsNome.value = t.nome || '';
+    document.getElementById('rs-ilim').checked = !!t.ilimitado;
     if (TIPOS[t.tipo]) rsTipo.value = t.tipo;
     aplicarTipoRs();
     ORDEM.forEach(function(r){
@@ -1485,9 +1506,9 @@ body{
       if (!inp.disabled) inp.value = String(qtd(t[r] > 0 ? t[r] : 1));
     });
   }
-  function usadoPorRegistros(n){
+  function usadoPorRegistros(n, dia){
     var u = { cafe: 0, almoco: 0, janta: 0 };
-    todosRegs().forEach(function(r){ if (r.numero === n && u[r.ref] != null) u[r.ref]++; });
+    todosRegs().forEach(function(r){ if (r.numero === n && u[r.ref] != null && (!dia || r.dia === dia)) u[r.ref]++; });
     return u;
   }
   function existeTicket(n){ return tickets.some(function(x){ return x.numero === n; }); }
@@ -1500,7 +1521,7 @@ body{
     var regs = todosRegs().filter(function(r){ return r.numero === n; }).sort(function(a, b){ return b.ts - a.ts; });
     if (l) { preencherRs(l); rsMsg.textContent = 'Encontrado entre os apagados: dados originais carregados. Confira e coloque na lista.'; }
     else if (regs.length) {
-      var u = usadoPorRegistros(n), t = { nome: regs[0].nome, tipo: TIPOS[regs[0].tipo] ? regs[0].tipo : 'novato' };
+      var u = usadoPorRegistros(n), t = { nome: regs[0].nome, tipo: TIPOS[regs[0].tipo] ? regs[0].tipo : 'novato', ilimitado: false };
       ORDEM.forEach(function(r){ t[r] = Math.max(1, u[r]); });
       preencherRs(t);
       rsMsg.textContent = 'Dados recuperados dos registros de uso. Confira as quantidades e coloque na lista.';
@@ -1524,13 +1545,15 @@ body{
     if (existeTicket(n)) { rsMsg.textContent = 'Este número já está na lista de tickets.'; return; }
     var tp = TIPOS[rsTipo.value];
     var l = lixeira.filter(function(x){ return x.numero === n; })[0];
-    var ur = usadoPorRegistros(n);
+    var ilim = document.getElementById('rs-ilim').checked;
+    var ur = usadoPorRegistros(n, ilim ? hoje() : '');
     var t = { numero: n, nome: rsNome.value.trim(), tipo: rsTipo.value, cafe: 0, almoco: 0, janta: 0,
-              usado: { cafe: 0, almoco: 0, janta: 0 }, criado: (l && l.criado) || Date.now() };
+              usado: { cafe: 0, almoco: 0, janta: 0 }, criado: (l && l.criado) || Date.now(),
+              ilimitado: ilim, diaUso: ilim ? hoje() : '' };
     ORDEM.forEach(function(r){
       if (tp.refs.indexOf(r) < 0) return;
       t[r] = qtd(document.getElementById('rs-' + r).value);
-      t.usado[r] = Math.max((l && l.usado && l.usado[r]) || 0, ur[r]);
+      t.usado[r] = Math.max(l ? usadoDe(l, r) : 0, ur[r]);
     });
     colocarTicket(t).then(function(){
       rsMsg.textContent = 'Ticket ' + fmt(n) + ' colocado de volta na lista.';
@@ -1619,7 +1642,8 @@ body{
     var n = String(x.numero || '').replace(/\s+/g, '');
     if (!/^\d{8}$/.test(n) || !TIPOS[x.tipo]) return null;
     var t = { numero: n, nome: String(x.nome || '').slice(0, 80), tipo: x.tipo, cafe: 0, almoco: 0, janta: 0,
-              usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Number(x.criado) || Date.now() };
+              usado: { cafe: 0, almoco: 0, janta: 0 }, criado: Number(x.criado) || Date.now(),
+              ilimitado: x.ilimitado === true, diaUso: /^\d{4}-\d{2}-\d{2}$/.test(x.diaUso || '') ? x.diaUso : '' };
     ORDEM.forEach(function(r){
       t[r] = Math.max(0, Math.min(30, parseInt(x[r], 10) || 0));
       t.usado[r] = Math.max(0, Math.min(99, parseInt(x.usado && x.usado[r], 10) || 0));
@@ -1641,9 +1665,10 @@ body{
       var mudou = false;
       c.usado = {};
       ORDEM.forEach(function(r){
-        var a = usadoDe(l, r), b = Math.max(a, t.usado[r]);
+        var a = usadoDe(l, r), b = Math.max(a, usadoDe(t, r));
         c.usado[r] = b; if (b !== a) mudou = true;
       });
+      if (c.ilimitado && mudou) c.diaUso = hoje();
       if (!c.nome && t.nome) { c.nome = t.nome; mudou = true; }
       if (mudou) mudados.push(c);
     });
