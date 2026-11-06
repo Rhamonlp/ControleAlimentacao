@@ -513,7 +513,7 @@ body{
       <div class="refs" id="ct-vigias"></div>
       <div class="lista" id="ct-lista"></div>
       <p class="dica" id="ct-imports"></p>
-      <button type="button" class="btn btn-adm" id="ct-csv">Exportar planilha (CSV)</button>
+      <button type="button" class="btn btn-adm" id="ct-csv">Exportar planilha (Excel)</button>
     </div>
     <div class="bloco">
       <h2 id="contagem">Tickets gerados</h2>
@@ -1503,24 +1503,81 @@ body{
     document.getElementById('ct-imports').textContent = imps.length ? 'Últimos backups recebidos: ' + imps.join(' | ') : 'Nenhum backup recebido neste aparelho ainda.';
   }
 
-  function csvCel(v){
-    v = String(v == null ? '' : v);
-    if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
-    return '"' + v.replace(/"/g, '""') + '"';
+  /* ---------- Gerador de .xlsx (sem bibliotecas externas, funciona offline) ---------- */
+  function crc32(buf){
+    var t = crc32.t;
+    if (!t) {
+      t = crc32.t = [];
+      for (var n = 0; n < 256; n++) { var c0 = n; for (var k = 0; k < 8; k++) c0 = (c0 & 1) ? (0xEDB88320 ^ (c0 >>> 1)) : (c0 >>> 1); t[n] = c0 >>> 0; }
+    }
+    var c = 0xFFFFFFFF;
+    for (var i = 0; i < buf.length; i++) c = t[(c ^ buf[i]) & 255] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
   }
+  function zipSimples(arqs){
+    var enc = new TextEncoder(), partes = [], central = [], desloc = 0;
+    function u16(v){ return [v & 255, (v >>> 8) & 255]; }
+    function u32(v){ return [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255]; }
+    arqs.forEach(function(a){
+      var nome = enc.encode(a.nome), dados = enc.encode(a.conteudo), crc = crc32(dados);
+      var cab = [].concat(u32(0x04034b50), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21), u32(crc), u32(dados.length), u32(dados.length), u16(nome.length), u16(0));
+      partes.push(new Uint8Array(cab), nome, dados);
+      central.push(new Uint8Array([].concat(u32(0x02014b50), u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21), u32(crc), u32(dados.length), u32(dados.length), u16(nome.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(desloc))), nome);
+      desloc += cab.length + nome.length + dados.length;
+    });
+    var tamCentral = 0; central.forEach(function(c){ tamCentral += c.length; });
+    var fim = new Uint8Array([].concat(u32(0x06054b50), u16(0), u16(0), u16(arqs.length), u16(arqs.length), u32(tamCentral), u32(desloc), u16(0)));
+    return new Blob(partes.concat(central, [fim]), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  function xmlEsc(v){
+    return String(v == null ? '' : v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function colLetra(i){ return String.fromCharCode(65 + i); }
+  function gerarXlsx(cabecalho, linhas, larguras, nomeAba){
+    var ult = colLetra(cabecalho.length - 1) + (linhas.length + 1);
+    function linha(vals, r, estilo){
+      return '<row r="' + r + '">' + vals.map(function(v, i){
+        return '<c r="' + colLetra(i) + r + '" t="inlineStr"' + (estilo ? ' s="1"' : '') + '><is><t xml:space="preserve">' + xmlEsc(v) + '</t></is></c>';
+      }).join('') + '</row>';
+    }
+    var sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' +
+      '<cols>' + larguras.map(function(w, i){ return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>'; }).join('') + '</cols>' +
+      '<sheetData>' + linha(cabecalho, 1, true) + linhas.map(function(l, i){ return linha(l, i + 2, false); }).join('') + '</sheetData>' +
+      '<autoFilter ref="A1:' + ult + '"/></worksheet>';
+    var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts>' +
+      '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF7B1FA2"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+      '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs>' +
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+    return zipSimples([
+      { nome: '[Content_Types].xml', conteudo: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
+      { nome: '_rels/.rels', conteudo: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { nome: 'xl/workbook.xml', conteudo: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + xmlEsc(nomeAba) + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
+      { nome: 'xl/_rels/workbook.xml.rels', conteudo: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
+      { nome: 'xl/styles.xml', conteudo: styles },
+      { nome: 'xl/worksheets/sheet1.xml', conteudo: sheet }
+    ]);
+  }
+
   document.getElementById('ct-csv').addEventListener('click', function(){
     var dia = ctDia.value || hoje();
     var porNum = {}; tickets.forEach(function(t){ porNum[t.numero] = t; });
     var lista = todosRegs().filter(function(r){ return r.dia === dia; }).sort(function(a, b){ return a.ts - b.ts; });
     if (!lista.length) { ctMsg.textContent = 'Nenhuma refeição registrada neste dia para exportar.'; return; }
-    var linhas = [['Data', 'Hora', 'Vigia', 'Ticket', 'Colaborador', 'Tipo', 'Refeição'].map(csvCel).join(';')];
-    lista.forEach(function(r){
+    var linhas = lista.map(function(r){
       var tk = porNum[r.numero];
       var tp = (tk && tk.tipo) || r.tipo;
-      linhas.push([dataBr(r.dia), horaDe(r.ts), r.vigia || 'Sem identificação', fmt(r.numero), (tk && tk.nome) || r.nome || SEM,
-                   TIPOS[tp] ? TIPOS[tp].nome : tp, REFS[r.ref]].map(csvCel).join(';'));
+      return [dataBr(r.dia), horaDe(r.ts), r.vigia || 'Sem identificação', fmt(r.numero), (tk && tk.nome) || r.nome || SEM,
+              TIPOS[tp] ? TIPOS[tp].nome : tp, REFS[r.ref]];
     });
-    baixar('refeicoes-' + dia + '.csv', '\ufeff' + linhas.join('\r\n'), 'text/csv;charset=utf-8');
+    var xlsx = gerarXlsx(['Data', 'Hora', 'Vigia', 'Ticket', 'Colaborador', 'Tipo', 'Refeição'], linhas, [12, 8, 22, 10, 32, 18, 16], 'Refeições');
+    baixar('refeicoes-' + dia + '.xlsx', xlsx, xlsx.type);
     ctMsg.textContent = 'Planilha gerada com ' + lista.length + ' registro(s).';
   });
 
