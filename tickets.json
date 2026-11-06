@@ -1,8 +1,26 @@
 {
  "tipo": "parex-tickets",
  "versao": 1,
- "gerado": 1793997086715,
- "minutas": [],
+ "gerado": 1793997757087,
+ "minutas": [
+  {
+   "id": "m_lsw3q9",
+   "nome": "EQUIPE",
+   "info": "",
+   "cor": "#7b1fa2",
+   "refs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ],
+   "padrao": {
+    "cafe": 1,
+    "almoco": 1,
+    "janta": 1,
+    "ilim": true
+   }
+  }
+ ],
  "tickets": [
   {
    "numero": "79498675",
@@ -3203,6 +3221,1156 @@
    "criado": 1793996965205,
    "ilimitado": true,
    "diaUso": ""
+  },
+  {
+   "numero": "73889713",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558110,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "56490602",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558111,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "44164043",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558112,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "81015272",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558113,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "11006971",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558114,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "46694474",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558115,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "45943161",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558116,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "14439613",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558117,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "60184951",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558118,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "68020367",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558119,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "16427553",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558120,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "99767834",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558121,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "68472648",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558122,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "92503128",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558123,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "47454410",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558124,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "91041695",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558125,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "25854738",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558126,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "71438623",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558127,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "61381165",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558128,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "14538433",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558129,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "23188008",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558130,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "52290544",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558131,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "68800215",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558132,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "66755189",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558133,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "20918220",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558135,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "88154070",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558136,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "60034275",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558137,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "39587306",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558138,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "14618476",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558139,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "61362011",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558140,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "51889599",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558141,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "27932067",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558142,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "84985308",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558143,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "71452203",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558144,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "94032246",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558145,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "52267916",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558146,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "62395255",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558147,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "52427412",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558148,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "69904607",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558149,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "55584957",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558150,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "12565789",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558151,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "63621421",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558152,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "90276600",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558153,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "57437512",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558154,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "85262822",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558155,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "83562424",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558156,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "84057177",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558157,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "40722002",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558158,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "15384075",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558159,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
+  },
+  {
+   "numero": "62860118",
+   "nome": "",
+   "tipo": "m_lsw3q9",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 1,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1793997558160,
+   "ilimitado": true,
+   "diaUso": "",
+   "tipoNome": "EQUIPE",
+   "tipoCor": "#7b1fa2",
+   "tipoRefs": [
+    "cafe",
+    "almoco",
+    "janta"
+   ]
   }
  ]
 }
