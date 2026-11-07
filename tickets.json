@@ -1,11 +1,11 @@
 {
  "tipo": "parex-tickets",
  "versao": 1,
- "gerado": 1793997757087,
+ "gerado": 1794059349619,
  "minutas": [
   {
    "id": "m_lsw3q9",
-   "nome": "EQUIPE",
+   "nome": "Equipe",
    "info": "",
    "cor": "#7b1fa2",
    "refs": [
@@ -18,6 +18,22 @@
     "almoco": 1,
     "janta": 1,
     "ilim": true
+   }
+  },
+  {
+   "id": "m_982c12",
+   "nome": "Folga de Campo",
+   "info": "",
+   "cor": "#f2eb0d",
+   "refs": [
+    "cafe",
+    "almoco"
+   ],
+   "padrao": {
+    "cafe": 1,
+    "almoco": 1,
+    "janta": 1,
+    "ilim": false
    }
   }
  ],
@@ -3799,7 +3815,7 @@
   },
   {
    "numero": "88154070",
-   "nome": "",
+   "nome": "EDUARDO JOSE LOPES PEREIRA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3822,7 +3838,7 @@
   },
   {
    "numero": "60034275",
-   "nome": "",
+   "nome": "AILTON NUNES SOARES",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3845,7 +3861,7 @@
   },
   {
    "numero": "39587306",
-   "nome": "",
+   "nome": "KHAWANY SANTOS DE MORAES",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3868,7 +3884,7 @@
   },
   {
    "numero": "14618476",
-   "nome": "",
+   "nome": "SAMARA PEREIRA DE OLIVEIRA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3891,7 +3907,7 @@
   },
   {
    "numero": "61362011",
-   "nome": "",
+   "nome": "ELISMAR NOGUEIRA PRATES",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3914,7 +3930,7 @@
   },
   {
    "numero": "51889599",
-   "nome": "",
+   "nome": "SILVANI PEDROSO BONFIM",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3937,7 +3953,7 @@
   },
   {
    "numero": "27932067",
-   "nome": "",
+   "nome": "ELIZABETE SIMAO BARBOSA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3960,7 +3976,7 @@
   },
   {
    "numero": "84985308",
-   "nome": "",
+   "nome": "MARILEIDE MONTEIRO DOS SANTOS",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -3983,7 +3999,7 @@
   },
   {
    "numero": "71452203",
-   "nome": "",
+   "nome": "MARILENE RIBEIRO DA CUNHA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4006,7 +4022,7 @@
   },
   {
    "numero": "94032246",
-   "nome": "",
+   "nome": "DELIONISIA MOREIRA DA SILVA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4029,7 +4045,7 @@
   },
   {
    "numero": "52267916",
-   "nome": "",
+   "nome": "MACIANA SOUSA SANTOS BARBOSA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4052,7 +4068,7 @@
   },
   {
    "numero": "62395255",
-   "nome": "",
+   "nome": "AUREA PEREIRA DA SILVA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4075,7 +4091,7 @@
   },
   {
    "numero": "52427412",
-   "nome": "",
+   "nome": "DEMETRIO FELIX DA SILVA BANDEIRA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4098,7 +4114,7 @@
   },
   {
    "numero": "69904607",
-   "nome": "",
+   "nome": "MAICON LUCAS DA SILVA SALAZAR",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4121,7 +4137,7 @@
   },
   {
    "numero": "55584957",
-   "nome": "",
+   "nome": "JUNISMAR PEREIRA DE ARRUDA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4144,7 +4160,7 @@
   },
   {
    "numero": "12565789",
-   "nome": "",
+   "nome": "EVALIDO DE SOUZA RAMOS",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4167,7 +4183,7 @@
   },
   {
    "numero": "63621421",
-   "nome": "",
+   "nome": "LOURIVAL DA SILVA TORRES",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4190,7 +4206,7 @@
   },
   {
    "numero": "90276600",
-   "nome": "",
+   "nome": "GENIVALDO FRANCISCO DA SILVA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4213,7 +4229,7 @@
   },
   {
    "numero": "57437512",
-   "nome": "",
+   "nome": "FRANCISCO DAS CHAGAS DA SILVA NOBREGA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4236,7 +4252,7 @@
   },
   {
    "numero": "85262822",
-   "nome": "",
+   "nome": "LUCIANO FERREIRA DA SILVA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4259,7 +4275,7 @@
   },
   {
    "numero": "83562424",
-   "nome": "",
+   "nome": "GEDEON CANDIDO DA SILVA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4282,7 +4298,7 @@
   },
   {
    "numero": "84057177",
-   "nome": "",
+   "nome": "RHAMON LOPES DE ABREU",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4305,7 +4321,7 @@
   },
   {
    "numero": "40722002",
-   "nome": "",
+   "nome": "CRISTIANO VITORINO BEZERRA LIMA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4328,7 +4344,7 @@
   },
   {
    "numero": "15384075",
-   "nome": "",
+   "nome": "LEONE MAGALHAES DE OLIVEIRA",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4351,7 +4367,7 @@
   },
   {
    "numero": "62860118",
-   "nome": "",
+   "nome": "LAERCIO PEREIRA DAS NEVES",
    "tipo": "m_lsw3q9",
    "cafe": 1,
    "almoco": 1,
@@ -4370,6 +4386,1106 @@
     "cafe",
     "almoco",
     "janta"
+   ]
+  },
+  {
+   "numero": "80068202",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354364,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "10099562",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354365,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "88843743",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354366,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "69653024",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354368,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "78122395",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354369,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "49712364",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354370,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "43699772",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354371,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "52308096",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354372,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "45148793",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354373,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "59898206",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354374,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "26900512",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354375,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "48779541",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354376,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "22596990",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354377,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "10100513",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354378,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "15486504",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354379,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "27271271",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354380,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "84229319",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354381,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "81348903",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354382,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "68140389",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354383,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "95627875",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354384,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "23980143",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354385,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "87374987",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354386,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "80534822",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354387,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "48655485",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354388,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "80719120",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354389,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "26750750",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354390,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "59651226",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354391,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "25712626",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354392,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "83711649",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354393,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "30346661",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354394,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "27637616",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354395,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "74542894",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354396,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "19195681",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354397,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "53248968",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354398,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "48191309",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354399,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "44825062",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354400,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "59377976",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354401,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "18086431",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354402,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "66742659",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354403,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "22817336",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354405,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "96305078",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354406,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "71606285",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354407,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "43858668",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354408,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "23760348",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354409,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "68456177",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354410,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "19255513",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354411,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "28892414",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354412,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "10748092",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354413,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "61884819",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354414,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
+   ]
+  },
+  {
+   "numero": "48164790",
+   "nome": "",
+   "tipo": "m_982c12",
+   "cafe": 1,
+   "almoco": 1,
+   "janta": 0,
+   "usado": {
+    "cafe": 0,
+    "almoco": 0,
+    "janta": 0
+   },
+   "criado": 1794047354415,
+   "ilimitado": false,
+   "diaUso": "",
+   "tipoNome": "Folga de Campo",
+   "tipoCor": "#f2eb0d",
+   "tipoRefs": [
+    "cafe",
+    "almoco"
    ]
   }
  ]
